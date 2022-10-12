@@ -7,6 +7,7 @@ A funcionalidade necessária para a entrega intermédia, além da abertura de to
 - Menu de Gestão de Terminais -- implementar as operações "Mostrar todos os terminais", "Registar terminal" e "Menu da consola de um terminal".
 - Menu de gestão de clientes -- implementar as operações "Visualizar cliente", "Visualizar todos os clientes" e "Registar cliente".
 - Menu de Consultas -- implementar a operação "Mostrar terminais sem actividade".
+
 Todos os outros comandos em todos os menus têm de estar concretizados ("execute" pode estar vazio). Não é má prática implementar os outros comandos, pois poupa esforço para a entrega final, mas não serão avaliados nesta entrega.
 
 Note-se que os comandos que abrem os vários menus da aplicação já estão concretizados e portanto não podem ser alterados. Note-se ainda que a classe **App** e os vários menus já disponibilizados no esqueleto da aplicação também não podem ser alterados.
