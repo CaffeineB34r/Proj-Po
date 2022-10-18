@@ -13,9 +13,9 @@ class DoShowTerminalBalance extends TerminalCommand {
   DoShowTerminalBalance(Network context, Terminal terminal) {
     super(Label.SHOW_BALANCE, context, terminal);
   }
-  
+
   @Override
   protected final void execute() throws CommandException {
-    //FIXME implement command
+    // FIXME implement command
   }
 }

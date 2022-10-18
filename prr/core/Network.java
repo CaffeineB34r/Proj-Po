@@ -1,5 +1,6 @@
 package prr.core;
 
+import java.util.Map;
 import java.io.Serializable;
 import java.io.IOException;
 import prr.core.exception.UnrecognizedEntryException;
@@ -14,7 +15,8 @@ public class Network implements Serializable {
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
   
-  // FIXME define attributes
+  private Map <String, Client> _clients;
+  private Map <Integer, Terminal> _terminals = new Map <Integer, Terminal>();
   // FIXME define contructor(s)
   // FIXME define methods
   
@@ -26,6 +28,18 @@ public class Network implements Serializable {
    * @throws IOException if there is an IO erro while processing the text file
    */
   void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */  {
+    //FIXME implement method
+  }
+  
+  public void registerClient(String name, String key, int taxNumber) {
+    _clients.put(key, new Client(name, key, taxNumber));
+  }
+
+  public void sendTextCommunication(Terminal from, String toKey, String msg) {
+    //FIXME implement method
+  }
+
+  public void startInteractiveCommunication(Terminal from, String toKey, String type) {
     //FIXME implement method
   }
 }
