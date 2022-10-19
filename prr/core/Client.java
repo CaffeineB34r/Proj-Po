@@ -2,12 +2,12 @@ package prr.core;
 
 
 import java.util.ArrayList;
-//import java.io.Serializable;
+import java.io.Serializable;
 
-public class Client {
+public class Client implements Serializable {
     /** Serial number for serialization. */
     private static final long serialVersionUID = 202208091753L;
-
+ 
     private final String _key;
     private final String _name;
     private final int _taxNumber;
@@ -17,7 +17,7 @@ public class Client {
     private int _payments;
     private int _debts;
 
-    private enum ClientLevel {
+    public enum ClientLevel {
         NORMAL,
         GOLD,
         PLATINUM,
