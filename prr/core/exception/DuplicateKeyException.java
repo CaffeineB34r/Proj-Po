@@ -1,19 +1,13 @@
 package prr.core.exception;
 
-public class DuplicateKeyException extends Exception {
+public class DuplicateKeyException extends WrongKeyException {
 
   private static final long serialVersionUID = 201708301010L;
 
-  private String _key;
-
   public DuplicateKeyException(String key) {
-    _key = key;
+    super(key);
   }
-
-  public String getKey() {
-    return _key;
-  }
-
+  
 }
     
 

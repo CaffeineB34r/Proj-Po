@@ -65,7 +65,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
   public HashSet <String> getFriends() {
     return _friends;
   }
-  
   public void addFriend(Terminal friend) {
     _friends.add(friend.getId());
   }
@@ -97,11 +96,9 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
   public void makeVoiceCall(Terminal to) {
     //FIXME implement method
   }
-
   protected void acceptVoiceCall(Terminal from) {
     //FIXME implement method
   }
-
   public void makeVideoCall(Terminal to) {
     //FIXME implement method
   }

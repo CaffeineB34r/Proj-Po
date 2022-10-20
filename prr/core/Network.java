@@ -6,7 +6,9 @@ import java.io.Serializable;
 import java.io.IOException;
 
 import prr.core.exception.DuplicateKeyException;
-import prr.core.exception.UnknowKeyException;
+import prr.core.exception.InvalidKeyException;
+import prr.core.exception.UnknownKeyException;
+import prr.core.exception.WrongKeyException;
 import prr.core.exception.UnrecognizedEntryException;
 
 // add more import if needed (cannot import from pt.tecnico or prr.app)
@@ -35,7 +37,7 @@ public class Network implements Serializable {
    * @throws IOException                if there is an IO erro while processing
    *                                    the text file
    */
-  void importFile(String filename) throws UnrecognizedEntryException, IOException{
+  void importFile(String filename) throws UnrecognizedEntryException, IOException {
     Parser parser = new Parser(this);
     parser.parseFile(filename);
   }
@@ -47,30 +49,42 @@ public class Network implements Serializable {
     _clients.put(key, new Client(key, name, taxNumber));
   }
 
-  public Terminal registerTerminal(String type, String key, String clientid) throws UnknowKeyException, DuplicateKeyException {
+  /**
+   * @param type     type of terminal
+   * @param key      terminal key
+   * @param clientid key of the client that owns the terminal
+   * 
+   * @return the new terminal
+   * 
+   * @throws InvalidKeyException   if the terminal key is not valid
+   * @throws DuplicateKeyException if the terminal key is already in use
+   * @throws UnknownKeyException   if the client key does not exist
+   */
+
+  public Terminal registerTerminal(String type, String key, String clientid)
+      throws InvalidKeyException, DuplicateKeyException, UnknownKeyException {
     Terminal t;
-    Client owner = _clients.get(clientid);
-    if (owner == null)
-      throw new UnknowKeyException(clientid);
-    else if (_terminals.containsKey(key))
+    Client owner = getClient(clientid);
+
+    if (_terminals.containsKey(key))
       throw new DuplicateKeyException(key);
-    
+    else if (!key.matches("^[0-9]{6}$"))
+      throw new InvalidKeyException(key);
+
     if (type.equals("BASIC"))
       t = new BasicTerminal(key, owner);
-    else if (type.equals("FANCY"))
-      t = new FancyTerminal(key, owner);
     else
-      throw new UnknowKeyException(type);
+      t = new FancyTerminal(key, owner);
 
     _terminals.put(key, t);
     return t;
   }
 
-  public void addFriend(String terminal, String friend) throws UnknowKeyException {
+  public void addFriend(String terminal, String friend) throws UnknownKeyException {
     Terminal t = _terminals.get(terminal);
     Terminal f = _terminals.get(friend);
     if (t == null || f == null)
-      throw new UnknowKeyException(terminal);
+      throw new UnknownKeyException(terminal);
     t.addFriend(f);
   }
 
@@ -84,33 +98,39 @@ public class Network implements Serializable {
       System.out.println(t.toString());
   }
 
-  public Client getClient(String clientKey) {
-    return _clients.get(clientKey);
+  public Client getClient(String clientKey) throws UnknownKeyException {
+    if (_clients.containsKey(clientKey))
+      return _clients.get(clientKey);
+    else
+      throw new UnknownKeyException(clientKey);
   }
 
-  public Terminal getTerminal(String terminalKey) {
-    return _terminals.get(terminalKey);
+  public Terminal getTerminal(String terminalKey) throws UnknownKeyException {
+    if (_terminals.containsKey(terminalKey))
+      return _terminals.get(terminalKey);
+    else
+      throw new UnknownKeyException(terminalKey);
   }
 
-  public void removeFriend(String terminal, String friend) throws UnknowKeyException {
+  public void removeFriend(String terminal, String friend) throws UnknownKeyException {
     Terminal t = _terminals.get(terminal);
     Terminal f = _terminals.get(friend);
     if (t == null || f == null)
-      throw new UnknowKeyException(terminal);
+      throw new UnknownKeyException(terminal);
     t.removeFriend(f);
   }
 
-  public String showClient(String stringField) throws UnknowKeyException {
+  public String showClient(String stringField) throws WrongKeyException {
     Client c = _clients.get(stringField);
     if (c == null)
-      throw new UnknowKeyException(stringField);
+      throw new WrongKeyException(stringField);
     return c.toString();
   }
 
-  public String showDebtPayments(String stringField) throws UnknowKeyException {
+  public String showDebtPayments(String stringField) throws WrongKeyException {
     Client c = _clients.get(stringField);
     if (c == null)
-      throw new UnknowKeyException(stringField);
+      throw new WrongKeyException(stringField);
     return c.getDebts() + " " + c.getPayments();
   }
 
