@@ -2,6 +2,7 @@ package prr.app.terminal;
 
 import prr.core.Network;
 import prr.core.Terminal;
+import prr.core.exception.IllegalModeException;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add more imports if needed
 
@@ -16,6 +17,11 @@ class DoSilenceTerminal extends TerminalCommand {
   
   @Override
   protected final void execute() throws CommandException {
-    //FIXME implement command
+    try {
+      _receiver.setOnSilent();
+    } catch (IllegalModeException e) {
+      _display.addLine(Message.alreadySilent());
+      _display.display();
+    }
   }
 }
