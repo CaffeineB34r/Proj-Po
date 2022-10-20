@@ -17,30 +17,45 @@ public class Network implements Serializable {
 
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
-  
-  private Map <String, Client> _clients;
-  private Map <String, Terminal> _terminals = new TreeMap <String, Terminal>();
-  // FIXME define contructor(s)
-  // FIXME define methods
-  
+
+  private Map<String, Client> _clients;
+  private Map<String, Terminal> _terminals;
+
+  public Network() {
+    _clients = new TreeMap<String, Client>();
+    _terminals = new TreeMap<String, Terminal>();
+  }
+
   /**
    * Read text input file and create corresponding domain entities.
    * 
    * @param filename name of the text input file
    * @throws UnrecognizedEntryException if some entry is not correct
-   * @throws IOException if there is an IO erro while processing the text file
+   * @throws IOException                if there is an IO erro while processing
+   *                                    the text file
    */
-  void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */  {
+  void importFile(String filename) throws UnrecognizedEntryException, IOException{
     Parser parser = new Parser(this);
     parser.parseFile(filename);
   }
-  
+
   public void registerClient(String name, String key, int taxNumber) {
     _clients.put(key, new Client(key, name, taxNumber));
   }
 
-  public Terminal registerTerminal(String string, String string2, String string3) {
-    return null;
+  public Terminal registerTerminal(String type, String key, String clientid) throws UnknowKeyException {
+    Terminal t;
+    Client owner = _clients.get(clientid);
+    if (owner == null)
+      throw new UnknowKeyException(clientid);
+    if (type == "BASIC")
+      t = new BasicTerminal(key, owner);
+    else if (type == "FANCY")
+      t = new FancyTerminal(key, owner);
+    else
+      throw new UnknowKeyException(type);
+    _terminals.put(key, t);
+    return t;
   }
 
   public void addFriend(String terminal, String friend) throws UnknowKeyException {
@@ -50,21 +65,19 @@ public class Network implements Serializable {
       throw new UnknowKeyException(terminal);
     t.addFriend(f);
     f.addFriend(t);
-
   }
-    
 
   public void showAllClients() {
-
+    for (Client c : _clients.values())
+      System.out.println(c.toString());
   }
 
-  public Client getClient(String clientKey){
+  public Client getClient(String clientKey) {
     return _clients.get(clientKey);
   }
-   
-  public Terminal getTerminal(String terminalKey){
+
+  public Terminal getTerminal(String terminalKey) {
     return _terminals.get(terminalKey);
   }
 
 }
-

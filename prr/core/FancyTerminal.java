@@ -1,9 +1,11 @@
 package prr.core;
 
-import prr.core.exception.UnknowKeyException;
-
 public class FancyTerminal extends Terminal {
-    public FancyTerminal(String key, String clientKey, Network network) throws UnknowKeyException {
-        super(key, clientKey, network);
+    public FancyTerminal(String key,Client owner) {
+        super(key, owner);
+    }
+
+    public String toString() {
+        return "FANCY|" + super.toString();
     }
 }

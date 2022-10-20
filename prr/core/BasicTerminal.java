@@ -1,9 +1,12 @@
 package prr.core;
 
-import prr.core.exception.UnknowKeyException;
-
 public class BasicTerminal extends Terminal {
-    public BasicTerminal(String key, String clientKey, Network network) throws UnknowKeyException {
-        super(key, clientKey, network);
+    public BasicTerminal(String key, Client owner) {
+        super(key, owner);
+    }
+
+    @Override
+    public String toString() {
+        return "BASIC|" + super.toString();
     }
 }
