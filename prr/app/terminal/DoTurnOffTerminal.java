@@ -2,6 +2,7 @@ package prr.app.terminal;
 
 import prr.core.Network;
 import prr.core.Terminal;
+import prr.core.exception.IllegalModeException;
 import pt.tecnico.uilib.menus.CommandException;
 
 /**
@@ -15,6 +16,11 @@ class DoTurnOffTerminal extends TerminalCommand {
   
   @Override
   protected final void execute() throws CommandException {
-    _receiver.turnOff();
+    try {
+      _receiver.turnOff();
+    } catch (IllegalModeException e) {
+      _display.addLine(Message.alreadyOff());
+      _display.display();
+    }
   }
 }

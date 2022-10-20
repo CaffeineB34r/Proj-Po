@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 
-import prr.core.exception.UnknowKeyException;
+import prr.core.exception.IllegalModeException;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -18,7 +18,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
   private HashSet <String> _friends;
   private List <Client> toNotify;
-  private Client owner;
+  private Client _owner;
 
   private String _id;
   private double _debt;
@@ -33,18 +33,13 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
     IDLE,
   }
 
-  public Terminal(String key, String clientKey, Network network) throws UnknowKeyException {
+  public Terminal(String key, Client owner) {
     _id = key;
     _friends = new HashSet <String>();
-    owner = network.getClient(clientKey);
+    _owner = owner;
     _debt = 0;
     _payments = 0;
-    _mode = TerminalMode.IDLE;
-    
-    if (owner != null) 
-      owner.addTerminal(this);
-    else
-      throw new UnknowKeyException(clientKey);
+    _mode = TerminalMode.IDLE;  
   }
   
   //getters
@@ -57,11 +52,15 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
   public double getPayments() {
     return _payments;
   }
+
+  public double getBalance() {
+      return getPayments()-getDebt();
+  }
   public TerminalMode getMode() {
     return _mode;
   }
   public Client getOwner() {
-    return owner;
+    return _owner;
   }
   public HashSet <String> getFriends() {
     return _friends;
@@ -115,18 +114,28 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
     //FIXME implement method
   }
 
-  public void setOnIdle() {
-    //FIXME implement method
+  public void setOnIdle() throws IllegalModeException {
+    setMode(TerminalMode.IDLE);
   }
 
-  public void setOnSilent() {
-    //FIXME implement method
+  public void setOnSilent() throws IllegalModeException {
+    setMode(TerminalMode.SILENCE);
   }
 
-  public void turnOff() {
-    
+  public void turnOff() throws IllegalModeException {
+    setMode(TerminalMode.OFF);
   }
 
+  public void setOnBusy() throws IllegalModeException {
+    setMode(TerminalMode.BUSY);
+  }
+
+
+  private void setMode(TerminalMode mode) throws IllegalModeException {
+    if (mode == _mode)
+      throw new IllegalModeException(mode);
+    _mode = mode;
+  }
 
   /**
    * Checks if this terminal can end the current interactive communication.
@@ -145,5 +154,23 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
    **/
   public boolean canStartCommunication() {
 	  return _mode != TerminalMode.OFF && _mode != TerminalMode.BUSY;
+  }
+
+  public String toString() {
+    // terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
+    StringBuilder sb = new StringBuilder();
+    sb.append(getId()+"|");
+    sb.append(getOwner().getKey()+"|");
+    sb.append(getMode()+"|");
+    sb.append(getPayments()+"|");
+    sb.append(getDebt()+"|");
+    for (String friend : getFriends()) {
+      sb.append(friend+",");
+    }
+    return sb.toString();
+  }
+
+  public void removeFriend(Terminal f) {
+    _friends.remove(f.getId());
   }
 }

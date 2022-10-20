@@ -64,12 +64,16 @@ public class Network implements Serializable {
     if (t == null || f == null)
       throw new UnknowKeyException(terminal);
     t.addFriend(f);
-    f.addFriend(t);
   }
 
   public void showAllClients() {
     for (Client c : _clients.values())
       System.out.println(c.toString());
+  }
+
+  public void showAllTerminals() {
+    for (Terminal t : _terminals.values())
+      System.out.println(t.toString());
   }
 
   public Client getClient(String clientKey) {
@@ -78,6 +82,28 @@ public class Network implements Serializable {
 
   public Terminal getTerminal(String terminalKey) {
     return _terminals.get(terminalKey);
+  }
+
+  public void removeFriend(String terminal, String friend) throws UnknowKeyException {
+    Terminal t = _terminals.get(terminal);
+    Terminal f = _terminals.get(friend);
+    if (t == null || f == null)
+      throw new UnknowKeyException(terminal);
+    t.removeFriend(f);
+  }
+
+  public String showClient(String stringField) throws UnknowKeyException {
+    Client c = _clients.get(stringField);
+    if (c == null)
+      throw new UnknowKeyException(stringField);
+    return c.toString();
+  }
+
+  public String showDebtPayments(String stringField) throws UnknowKeyException {
+    Client c = _clients.get(stringField);
+    if (c == null)
+      throw new UnknowKeyException(stringField);
+    return c.getDebts() + " " + c.getPayments();
   }
 
 }

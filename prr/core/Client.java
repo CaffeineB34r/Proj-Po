@@ -88,7 +88,7 @@ public class Client implements Serializable {
         sb.append(getName()+"|");
         sb.append(getTaxNumber()+"|");
         sb.append(getLevel()+"|");
-        sb.append((getReceiveNotifications())? "YES":"NO" +"|");
+        sb.append((getReceiveNotifications())? "YES|" :"NO|");
         sb.append(getTerminalsSize()+"|");
         sb.append(getPayments()+"|");
         sb.append(getDebts());

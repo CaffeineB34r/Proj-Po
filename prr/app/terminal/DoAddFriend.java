@@ -23,7 +23,6 @@ class DoAddFriend extends TerminalCommand {
       _network.addFriend(_receiver.getId(), stringField("id"));
     } catch (UnknowKeyException e) {
       throw new UnknownTerminalKeyException(stringField("id"));
-  
     }
   }
 }

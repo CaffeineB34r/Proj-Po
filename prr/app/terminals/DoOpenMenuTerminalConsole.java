@@ -13,12 +13,12 @@ class DoOpenMenuTerminalConsole extends Command<Network> {
 
   DoOpenMenuTerminalConsole(Network receiver) {
     super(Label.OPEN_MENU_TERMINAL, receiver);
+    addStringField("id", Message.terminalKey());
     //FIXME add command fields
   }
 
   @Override
   protected final void execute() throws CommandException {
-    // TODO implement command
-    new prr.app.terminal.Menu(_receiver, _receiver.getTerminal(stringField("id"))).open();
+    (new prr.app.terminal.Menu(_receiver, _receiver.getTerminal(stringField("id")))).open();
   }
 }

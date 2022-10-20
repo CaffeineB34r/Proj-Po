@@ -1,6 +1,7 @@
 package prr.app.main;
 
 import prr.core.NetworkManager;
+import prr.core.exception.UnavailableFileException;
 import prr.app.exception.FileOpenFailedException;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
@@ -19,12 +20,10 @@ class DoOpenFile extends Command<NetworkManager> {
   
   @Override
   protected final void execute() throws CommandException {
-    /*
       try {
-      //FIXME implement command
+        _receiver.load(null);
       } catch (UnavailableFileException e) {
         throw new FileOpenFailedException(e);
-      }
-    */  
+      } 
   }
 }
