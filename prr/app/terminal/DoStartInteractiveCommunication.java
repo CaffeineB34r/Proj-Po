@@ -4,8 +4,8 @@ import prr.core.Network;
 import prr.core.Terminal;
 import prr.core.exception.IllegalModeException;
 import prr.app.exception.UnknownTerminalKeyException;
-import pt.tecnico.uilib.Display;
-import pt.tecnico.uilib.forms.Form;
+//import pt.tecnico.uilib.Display;
+//import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add more imports if needed
 
@@ -25,6 +25,7 @@ class DoStartInteractiveCommunication extends TerminalCommand {
     } catch (IllegalModeException e) {
       _display.addLine("This option should not be available");
       _display.display();
+      throw new UnknownTerminalKeyException("TODO");
     }
   }
 }

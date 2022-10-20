@@ -17,7 +17,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
   private static final long serialVersionUID = 202208091753L;
 
   private HashSet <String> _friends;
-  private List <Client> toNotify;
+  //private List <Client> toNotify;
   private Client _owner;
 
   private String _id;

@@ -1,6 +1,6 @@
 package prr.app.terminals;
 
-import java.util.Collections;
+//import java.util.Collections;
 
 import prr.core.Network;
 import pt.tecnico.uilib.menus.Command;

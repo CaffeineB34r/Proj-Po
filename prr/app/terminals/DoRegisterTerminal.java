@@ -1,6 +1,5 @@
 package prr.app.terminals;
 
-import prr.core.Client;
 import prr.core.Network;
 import prr.core.exception.DuplicateKeyException;
 import prr.core.exception.InvalidKeyException;
