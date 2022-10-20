@@ -5,6 +5,7 @@ import java.util.TreeMap;
 import java.io.Serializable;
 import java.io.IOException;
 
+import prr.core.exception.DuplicateKeyException;
 import prr.core.exception.UnknowKeyException;
 import prr.core.exception.UnrecognizedEntryException;
 
@@ -39,21 +40,28 @@ public class Network implements Serializable {
     parser.parseFile(filename);
   }
 
-  public void registerClient(String name, String key, int taxNumber) {
+  public void registerClient(String name, String key, int taxNumber) throws DuplicateKeyException {
+    if (_clients.containsKey(key)) {
+      throw new DuplicateKeyException(key);
+    }
     _clients.put(key, new Client(key, name, taxNumber));
   }
 
-  public Terminal registerTerminal(String type, String key, String clientid) throws UnknowKeyException {
+  public Terminal registerTerminal(String type, String key, String clientid) throws UnknowKeyException, DuplicateKeyException {
     Terminal t;
     Client owner = _clients.get(clientid);
     if (owner == null)
       throw new UnknowKeyException(clientid);
-    if (type == "BASIC")
+    else if (_terminals.containsKey(key))
+      throw new DuplicateKeyException(key);
+    
+    if (type.equals("BASIC"))
       t = new BasicTerminal(key, owner);
-    else if (type == "FANCY")
+    else if (type.equals("FANCY"))
       t = new FancyTerminal(key, owner);
     else
       throw new UnknowKeyException(type);
+
     _terminals.put(key, t);
     return t;
   }
