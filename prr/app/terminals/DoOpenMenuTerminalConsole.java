@@ -18,8 +18,7 @@ class DoOpenMenuTerminalConsole extends Command<Network> {
 
   @Override
   protected final void execute() throws CommandException {
-    //FIXME implement command
-    // create an instance of prr.app.terminal.Menu with the
-    // selected Terminal and open it
+    // TODO implement command
+    new prr.app.terminal.Menu(_receiver, _receiver.getTerminal(stringField("id"))).open();
   }
 }

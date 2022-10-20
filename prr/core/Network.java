@@ -1,11 +1,14 @@
 package prr.core;
 
 import java.util.Map;
+import java.util.TreeMap;
 import java.io.Serializable;
 import java.io.IOException;
+
+import prr.core.exception.UnknowKeyException;
 import prr.core.exception.UnrecognizedEntryException;
 
-// FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
+// add more import if needed (cannot import from pt.tecnico or prr.app)
 
 /**
  * Class Store implements a store.
@@ -16,7 +19,7 @@ public class Network implements Serializable {
   private static final long serialVersionUID = 202208091753L;
   
   private Map <String, Client> _clients;
-  private Map <Integer, Terminal> _terminals = new Map <Integer, Terminal>();
+  private Map <String, Terminal> _terminals = new TreeMap <String, Terminal>();
   // FIXME define contructor(s)
   // FIXME define methods
   
@@ -28,19 +31,40 @@ public class Network implements Serializable {
    * @throws IOException if there is an IO erro while processing the text file
    */
   void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */  {
-    //FIXME implement method
+    Parser parser = new Parser(this);
+    parser.parseFile(filename);
   }
   
   public void registerClient(String name, String key, int taxNumber) {
-    _clients.put(key, new Client(name, key, taxNumber));
+    _clients.put(key, new Client(key, name, taxNumber));
   }
 
-  public void sendTextCommunication(Terminal from, String toKey, String msg) {
-    //FIXME implement method
+  public Terminal registerTerminal(String string, String string2, String string3) {
+    return null;
   }
 
-  public void startInteractiveCommunication(Terminal from, String toKey, String type) {
-    //FIXME implement method
+  public void addFriend(String terminal, String friend) throws UnknowKeyException {
+    Terminal t = _terminals.get(terminal);
+    Terminal f = _terminals.get(friend);
+    if (t == null || f == null)
+      throw new UnknowKeyException(terminal);
+    t.addFriend(f);
+    f.addFriend(t);
+
   }
+    
+
+  public void showAllClients() {
+
+  }
+
+  public Client getClient(String clientKey){
+    return _clients.get(clientKey);
+  }
+   
+  public Terminal getTerminal(String terminalKey){
+    return _terminals.get(terminalKey);
+  }
+
 }
 

@@ -76,6 +76,10 @@ public class Client implements Serializable {
         return _debts;
     }
 
+    public void addTerminal(Terminal terminal) {
+        _terminals.add(terminal);
+    }
+
     public String toString(){
         //CLIENT|key|name|taxId|type|notifications|terminals|payments|debts
         StringBuilder sb = new StringBuilder("CLIENT|");
