@@ -54,11 +54,11 @@ public class Network implements Serializable {
    * 
    * @throws DuplicateKeyException if the client key is already in use
    */
-  public Client registerClient(String name, String key, int taxNumber) throws DuplicateKeyException {
+  public Client registerClient(String key, String name, int taxNumber) throws DuplicateKeyException {
     if (_clients.containsKey(key)) {
       throw new DuplicateKeyException(key);
     }
-    Client c = new Client(name, key, taxNumber);
+    Client c = new Client(key, name, taxNumber);
     _clients.put(key,c);
     return c; // for consistency with terminal registration
   }
@@ -91,6 +91,7 @@ public class Network implements Serializable {
       t = new FancyTerminal(key, owner);
 
     _terminals.put(key, t);
+    owner.addTerminal(t);
     return t;
   }
 

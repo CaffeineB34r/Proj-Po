@@ -15,13 +15,14 @@ class DoOpenFile extends Command<NetworkManager> {
 
   DoOpenFile(NetworkManager receiver) {
     super(Label.OPEN_FILE, receiver);
+    addStringField("file", Message.openFile());
 
   }
   // TODO i dont get this
   @Override
   protected final void execute() throws CommandException {
       try {
-        _receiver.load(null);
+        _receiver.load(stringField("file"));
       } catch (UnavailableFileException e) {
         throw new FileOpenFailedException(e);
       } 

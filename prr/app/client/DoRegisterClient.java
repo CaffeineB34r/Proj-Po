@@ -15,16 +15,16 @@ class DoRegisterClient extends Command<Network> {
 
   DoRegisterClient(Network receiver) {
     super(Label.REGISTER_CLIENT, receiver);
-    
+
     addStringField("key", Message.key());
     addStringField("name", Message.name());
     addIntegerField("taxId", Message.taxId());
   }
 
   @Override
-  protected final void execute() throws CommandException { 
+  protected final void execute() throws CommandException {
     try {
-      _receiver.registerClient(stringField("name"), stringField("key"), integerField("taxId"));
+      _receiver.registerClient(stringField("key"), stringField("name"), integerField("taxId"));
     } catch (DuplicateKeyException e) {
       throw new DuplicateClientKeyException(e.getKey());
     }

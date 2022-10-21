@@ -17,7 +17,7 @@ class DoEndInteractiveCommunication extends TerminalCommand {
   
   @Override
   protected final void execute() throws CommandException {
-    //TODO implement command
+    //FIXME implement command
     throw new UnknownClientKeyException("not implemented"); 
       
     

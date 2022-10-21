@@ -23,8 +23,8 @@ public class Client implements Serializable {
         PLATINUM,
     } 
 
-    public Client(String _key,String name,int taxId){
-        this._key = _key;
+    public Client(String key,String name,int taxId){
+        this._key = key;
         this._name = name;
         this._taxNumber = taxId;
         this._payments = 0;

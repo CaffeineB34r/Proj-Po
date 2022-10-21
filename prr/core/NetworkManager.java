@@ -59,7 +59,13 @@ public class NetworkManager {
    *                                         to disk.
    */
   public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
-    saveAs(_filename);
+    if (_filename == null)
+      throw new MissingFileAssociationException();
+    
+    FileOutputStream fileOutputStream = new FileOutputStream(_filename);
+    ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+    objectOutputStream.writeObject(_network);
+    objectOutputStream.close();
   }
 
   /**
@@ -77,14 +83,8 @@ public class NetworkManager {
    *                                         to disk.
    */
   public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
-    if (filename == null) {
-      throw new MissingFileAssociationException();
-    }
-
-    FileOutputStream fileOutputStream = new FileOutputStream(filename);
-    ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-    objectOutputStream.writeObject(_network);
-    objectOutputStream.close();
+    _filename = filename;
+    save();
   }
 
   /**

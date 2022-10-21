@@ -158,10 +158,14 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
     sb.append(getId()+"|");
     sb.append(getOwner().getKey()+"|");
     sb.append(getMode()+"|");
-    sb.append(getPayments()+"|");
-    sb.append(getDebt()+"|");
-    for (String friend : getFriends()) {
-      sb.append(friend+",");
+    sb.append(Math.round(getPayments())+"|");
+    sb.append(Math.round(getDebt()));
+    if (_friends.size() > 0) {
+      sb.append("|");
+      for (String friend : _friends) {
+        sb.append(friend+",");
+      }
+      sb.deleteCharAt(sb.length()-1);
     }
     return sb.toString();
   }

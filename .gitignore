@@ -1,3 +1,6 @@
 build.gradle
 Hava.code-workspace
 lib
+tests
+tests/*
+*.class
