@@ -1,5 +1,6 @@
 package prr.app.terminal;
 
+import prr.app.exception.UnknownClientKeyException;
 import prr.core.Network;
 import prr.core.Terminal;
 //import pt.tecnico.uilib.forms.Form;
@@ -17,5 +18,8 @@ class DoEndInteractiveCommunication extends TerminalCommand {
   @Override
   protected final void execute() throws CommandException {
     //TODO implement command
+    throw new UnknownClientKeyException("not implemented"); 
+      
+    
   }
 }

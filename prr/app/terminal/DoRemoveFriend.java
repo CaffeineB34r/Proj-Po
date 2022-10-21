@@ -22,7 +22,7 @@ class DoRemoveFriend extends TerminalCommand {
     try {
       _network.removeFriend(_receiver.getId(), stringField("id"));
     } catch (WrongKeyException e) {
-      throw new UnknownTerminalKeyException(stringField("id"));
+      throw new UnknownTerminalKeyException(e.getKey());
     }
   }
 }

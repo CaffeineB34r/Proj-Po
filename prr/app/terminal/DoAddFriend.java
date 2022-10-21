@@ -3,7 +3,8 @@ package prr.app.terminal;
 import prr.app.exception.UnknownTerminalKeyException;
 import prr.core.Network;
 import prr.core.Terminal;
-import prr.core.exception.WrongKeyException;
+import prr.core.exception.UnknownKeyException;
+
 import pt.tecnico.uilib.menus.CommandException;
 
 /**
@@ -20,8 +21,8 @@ class DoAddFriend extends TerminalCommand {
   protected final void execute() throws CommandException {
     try {
       _network.addFriend(_receiver.getId(), stringField("id"));
-    } catch (WrongKeyException e) {
-      throw new UnknownTerminalKeyException(stringField("id"));
+    } catch (UnknownKeyException e) {
+      throw new UnknownTerminalKeyException(e.getKey());
     }
   }
 }

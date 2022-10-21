@@ -18,6 +18,6 @@ class DoDisableClientNotifications extends Command<Network> {
   
   @Override
   protected final void execute() throws CommandException{
-    throw new UnknownClientKeyException(null);
+    throw new UnknownClientKeyException("not implemented");
   }
 }

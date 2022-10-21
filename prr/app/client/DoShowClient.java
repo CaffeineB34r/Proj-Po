@@ -1,7 +1,7 @@
 package prr.app.client;
 
 import prr.core.Network;
-import prr.core.exception.WrongKeyException;
+import prr.core.exception.UnknownKeyException;
 import prr.app.exception.UnknownClientKeyException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -22,8 +22,8 @@ class DoShowClient extends Command<Network> {
     try {
       _display.addLine(_receiver.showClient(stringField("id")));
       _display.display();
-    } catch (WrongKeyException e) {
-      throw new UnknownClientKeyException(stringField("id"));
+    } catch (UnknownKeyException e) {
+      throw new UnknownClientKeyException(e.getKey());
     }
   }
 }

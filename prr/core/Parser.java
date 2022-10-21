@@ -5,11 +5,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
 
+import prr.core.exception.IllegalModeException;
+import prr.core.exception.UnknownKeyException;
+
 //import java.util.Collection;
 //import java.util.ArrayList;
 
 import prr.core.exception.UnrecognizedEntryException;
 // import more exception core classes if needed
+import prr.core.exception.WrongKeyException;
 
 /* 
  * A concretização desta classe depende da funcionalidade suportada pelas entidades do core:
@@ -61,7 +65,7 @@ public class Parser {
       _network.registerClient(components[1], components[2], taxNumber);
     } catch (NumberFormatException nfe) {
       throw new UnrecognizedEntryException("Invalid number in line " + line, nfe);
-    } catch (Exception e) {
+    } catch (WrongKeyException e) {
       throw new UnrecognizedEntryException("Invalid specification in line: " + line, e);
     }
   }
@@ -80,9 +84,12 @@ public class Parser {
            throw new UnrecognizedEntryException("Invalid specification in line: " + line);
         } 
       }
-    } catch (Exception e) {
+    } catch (WrongKeyException e) {
       throw new UnrecognizedEntryException("Invalid specification: " + line, e);
-    }
+    } catch (IllegalModeException e) {
+      // This does not happen because the mode starts as ON, but it is necessary to catch the exception
+      e.printStackTrace();
+    } 
 
   }
 
@@ -96,7 +103,7 @@ public class Parser {
       
       for (String friend : friends)
         _network.addFriend(terminal, friend);
-    } catch (Exception e) {
+    } catch (UnknownKeyException e) {
       throw new UnrecognizedEntryException("Some message error in line:  " + line, e);
     }
   }

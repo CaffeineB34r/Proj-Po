@@ -15,9 +15,9 @@ class DoOpenFile extends Command<NetworkManager> {
 
   DoOpenFile(NetworkManager receiver) {
     super(Label.OPEN_FILE, receiver);
-    //FIXME add command fields
+
   }
-  
+  // TODO i dont get this
   @Override
   protected final void execute() throws CommandException {
       try {

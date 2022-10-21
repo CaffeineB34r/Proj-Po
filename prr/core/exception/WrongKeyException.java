@@ -1,6 +1,10 @@
 package prr.core.exception;
 
-public class WrongKeyException extends Exception {
+/*
+ * Provides an exception root for wrong inputs Exceptions.
+ * This makes Debugging easier.
+ */
+public abstract class WrongKeyException extends Exception {
     private static final long serialVersionUID = 202208091753L;
 
     public WrongKeyException(String key) {
