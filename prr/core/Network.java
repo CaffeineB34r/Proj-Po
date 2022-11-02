@@ -2,7 +2,7 @@ package prr.core;
 
 import java.util.Collection;
 import java.util.function.Predicate;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.io.Serializable;
 import java.io.IOException;
@@ -23,12 +23,12 @@ public class Network implements Serializable {
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
 
-  private Map<String, Client> _clients;
-  private Map<String, Terminal> _terminals;
+  private SortedMap<String, Client> _clients;
+  private SortedMap<String, Terminal> _terminals;
 
   public Network() {
-    _clients = new TreeMap<String, Client>();
-    _terminals = new TreeMap<String, Terminal>();
+    _clients = new TreeMap<String, Client>(String.CASE_INSENSITIVE_ORDER);
+    _terminals = new TreeMap<String, Terminal>(String.CASE_INSENSITIVE_ORDER);
   }
 
   /**
@@ -59,7 +59,7 @@ public class Network implements Serializable {
       throw new DuplicateKeyException(key);
     }
     Client c = new Client(key, name, taxNumber);
-    _clients.put(key.toUpperCase(),c);
+    _clients.put(key,c);
     return c; // for consistency with terminal registration
   }
 
@@ -127,7 +127,7 @@ public class Network implements Serializable {
    * @throws UnknownKeyException if the client key does not exist
    */
   public Client getClient(String clientKey) throws UnknownKeyException {
-    clientKey = clientKey.toUpperCase();
+    
     if (_clients.containsKey(clientKey))
       return _clients.get(clientKey);
     else

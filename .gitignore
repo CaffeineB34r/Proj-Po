@@ -1,6 +1,7 @@
 build.gradle
 Hava.code-workspace
 lib
-tests
-tests/*
+tests*
+tests*/*
 *.class
+runtest*.sh
