@@ -24,13 +24,12 @@ public class Notifications implements Serializable{
         TEXTMESSAGE,
     }
 
-    public Notifications(NotificationType _type){
+
+    public Notifications(NotificationType type){
         this._clients = new TreeMap<String, Client>();
         this._offToSilent = new ArrayList <Client>();
         this._silentToIdle = new ArrayList <Client>();
         this._busyToIdle = new ArrayList <Client>();
-        this._type = NotificationType.valueOf(null);
-
-
+        this._type = type;
 
 }
