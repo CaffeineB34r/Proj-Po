@@ -5,8 +5,6 @@ import java.util.HashSet;
 
 import prr.core.exception.IllegalModeException;
 
-// FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
-
 /**
  * Abstract terminal.
  */
@@ -24,7 +22,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
   private double _payments;
   private TerminalMode _mode;
 
-
+  /** Possible Terminal states*/
   public enum TerminalMode { 
     OFF,
     BUSY,
@@ -32,6 +30,11 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
     IDLE,
   }
 
+  /**
+   * Creates a new terminal.
+   * @param key terminal id/key
+   * @param owner terminal owner
+   */
   public Terminal(String key, Client owner) {
     _id = key;
     _friends = new HashSet <String>();
@@ -41,7 +44,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
     _mode = TerminalMode.IDLE;  
   }
   
-  //getters
   public String getId() {
     return _id;
   }
@@ -173,4 +175,5 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
   public void removeFriend(Terminal f) {
     _friends.remove(f.getId());
   }
+  
 }

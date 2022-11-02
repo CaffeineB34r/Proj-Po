@@ -59,7 +59,7 @@ public class Network implements Serializable {
       throw new DuplicateKeyException(key);
     }
     Client c = new Client(key, name, taxNumber);
-    _clients.put(key,c);
+    _clients.put(key.toUpperCase(),c);
     return c; // for consistency with terminal registration
   }
 
@@ -127,6 +127,7 @@ public class Network implements Serializable {
    * @throws UnknownKeyException if the client key does not exist
    */
   public Client getClient(String clientKey) throws UnknownKeyException {
+    clientKey = clientKey.toUpperCase();
     if (_clients.containsKey(clientKey))
       return _clients.get(clientKey);
     else
@@ -219,7 +220,7 @@ public class Network implements Serializable {
     //Activity(making calls) generates Debt for the starting terminal
     //Activity could also be defined as having done OR taken any call
     
-    return showIf(_terminals.values(), (o) -> o.getDebt() > 0);
+    return showIf(_terminals.values(), (o) -> o.getDebt() == 0);
   }
 
 }
