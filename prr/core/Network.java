@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.io.IOException;
 
 import prr.core.exception.DuplicateKeyException;
+import prr.core.exception.IllegalModeException;
 import prr.core.exception.InvalidKeyException;
 import prr.core.exception.UnknownKeyException;
 
@@ -44,10 +45,11 @@ public class Network implements Serializable {
     parser.parseFile(filename);
   }
 
-  /** 
+  /**
    * Register a client in the network.
-   * @param name  client name
-   * @param key   client id/key
+   * 
+   * @param name      client name
+   * @param key       client id/key
    * @param taxNumber client tax id
    *
    * @return the new client
@@ -59,12 +61,13 @@ public class Network implements Serializable {
       throw new DuplicateKeyException(key);
     }
     Client c = new Client(key, name, taxNumber);
-    _clients.put(key,c);
+    _clients.put(key, c);
     return c; // for consistency with terminal registration
   }
 
   /**
    * Register a terminal in the network.
+   * 
    * @param type     type of terminal
    * @param key      terminal key
    * @param clientid key of the client that owns the terminal
@@ -97,8 +100,9 @@ public class Network implements Serializable {
 
   /**
    * Add a friend to a terminal (not simmetric).
+   * 
    * @param terminal key of the terminal
-   * @param friend  key of the friend
+   * @param friend   key of the friend
    * @throws UnknownKeyException if the terminal or friend key does not exist
    */
   public void addFriend(String terminal, String friend) throws UnknownKeyException {
@@ -106,11 +110,12 @@ public class Network implements Serializable {
     Terminal f = getTerminal(terminal);
     t.addFriend(f);
   }
-  
+
   /**
    * Remove a friend from a terminal (not simmetric).
+   * 
    * @param terminal key of the terminal
-   * @param friend  key of the friend
+   * @param friend   key of the friend
    * @throws UnknownKeyException if the terminal or friend key does not exist
    */
   public void removeFriend(String terminal, String friend) throws UnknownKeyException {
@@ -122,12 +127,13 @@ public class Network implements Serializable {
 
   /**
    * Get a client by key.
+   * 
    * @param key client key
    * @return the client
    * @throws UnknownKeyException if the client key does not exist
    */
   public Client getClient(String clientKey) throws UnknownKeyException {
-    
+
     if (_clients.containsKey(clientKey))
       return _clients.get(clientKey);
     else
@@ -136,6 +142,7 @@ public class Network implements Serializable {
 
   /**
    * Get a terminal by key.
+   * 
    * @param key terminal key
    * @return the terminal
    * @throws UnknownKeyException if the terminal key does not exist
@@ -148,7 +155,8 @@ public class Network implements Serializable {
   }
 
   /**
-   * Get the payment value for a client. 
+   * Get the payment value for a client.
+   * 
    * @param clientId client key
    * @return the client's payment value
    * @throws UnknownKeyException if the client key does not exist
@@ -159,6 +167,7 @@ public class Network implements Serializable {
 
   /**
    * Get the payment value for a client.
+   * 
    * @param clientId client key
    * @return the client's debt value
    * @throws UnknownKeyException if the client key does not exist
@@ -168,10 +177,11 @@ public class Network implements Serializable {
   }
 
   /**
-   * Generic method to get a string representing the Objects in a 
-   * collection that satisfy a predicate. 
-   * @param <T> type of the objects in the collection
-   * @param col collection of objects
+   * Generic method to get a string representing the Objects in a
+   * collection that satisfy a predicate.
+   * 
+   * @param <T>    type of the objects in the collection
+   * @param col    collection of objects
    * @param filter predicate to filter the objects
    * @return a string representing the objects in the collection
    */
@@ -188,6 +198,7 @@ public class Network implements Serializable {
 
   /**
    * Get a string representation of a Client.
+   * 
    * @param Clientid client key
    * @return a string representing the client
    * @throws UnknownKeyException if the client key does not exist
@@ -198,6 +209,7 @@ public class Network implements Serializable {
 
   /**
    * Get a string representation of all Terminals.
+   * 
    * @return a string representing the registred terminals
    */
   public String showAllTerminals() {
@@ -206,6 +218,7 @@ public class Network implements Serializable {
 
   /**
    * Get a string representation of all Clients.
+   * 
    * @return a string representing the registred clients
    */
   public String showAllClients() {
@@ -214,13 +227,24 @@ public class Network implements Serializable {
 
   /**
    * Get a string representation of all Terminals without activity.
+   * 
    * @return a string representing the registred terminals
    */
   public String showUnusedTerminals() {
-    //Activity(making calls) generates Debt for the starting terminal
-    //Activity could also be defined as having done OR taken any call
-    
+    // Activity(making calls) generates Debt for the starting terminal
+    // Activity could also be defined as having done OR taken any call
+
     return showIf(_terminals.values(), (o) -> o.getDebt() == 0);
+  }
+
+  public void disableClientNotifications(String clientId) throws UnknownKeyException, IllegalModeException {
+    Client c = getClient(clientId);
+    c.disableReceiveNotifications();
+  }
+
+  public void enableClientNotifications(String clientId) throws UnknownKeyException, IllegalModeException {
+    Client c = getClient(clientId);
+    c.enableRecieveNotifications();
   }
 
 }

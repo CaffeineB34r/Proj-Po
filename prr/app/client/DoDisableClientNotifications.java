@@ -1,6 +1,8 @@
 package prr.app.client;
 
 import prr.core.Network;
+import prr.core.exception.IllegalModeException;
+import prr.core.exception.UnknownKeyException;
 import prr.app.exception.UnknownClientKeyException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -16,7 +18,14 @@ class DoDisableClientNotifications extends Command<Network> {
   }
   
   @Override
-  protected final void execute() throws CommandException{
-    throw new UnknownClientKeyException("not implemented");
+  protected final void execute() throws UnknownClientKeyException{
+    String clientId = stringField("id");
+    try {
+      _receiver.disableClientNotifications(clientId);
+    } catch (UnknownKeyException e) {
+      throw new UnknownClientKeyException(clientId);
+    } catch (IllegalModeException e) {
+      System.out.println(Message.clientNotificationsAlreadyDisabled());
+    }
   }
 }
