@@ -2,6 +2,9 @@ package prr.core;
 
 
 import java.util.ArrayList;
+
+import prr.core.exception.IllegalModeException;
+
 import java.io.Serializable;
 
 public class Client implements Serializable {
@@ -34,20 +37,18 @@ public class Client implements Serializable {
         this._receiveNotifications = true;
     }
 
-    public boolean disableReceiveNotifications(){
+    public void disableReceiveNotifications() throws IllegalModeException{
         if (getReceiveNotifications()){
             this._receiveNotifications = false;
-            return true;
         }
-        return false;
+        throw new IllegalModeException("NO");
     }
 
-    public boolean enableRecieveNotifications(){
-        if (!getReceiveNotifications()){
-            this._receiveNotifications = true;
-            return true;
+    public void enableRecieveNotifications() throws IllegalModeException{
+        if (getReceiveNotifications()){
+            this._receiveNotifications = false;
         }
-        return false;
+        throw new IllegalModeException("YES");
     }
 
     //Getters

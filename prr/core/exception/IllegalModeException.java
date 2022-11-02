@@ -1,18 +1,17 @@
 package prr.core.exception;
-import prr.core.Terminal.TerminalMode;
 
 public class IllegalModeException extends Exception {
 
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
 
-  private TerminalMode _mode;
+  private String _mode;
 
-  public IllegalModeException(TerminalMode mode) {
+  public IllegalModeException(String mode) {
     _mode = mode;
   }
 
-  public TerminalMode getMode() {
+  public String getMode() {
     return _mode;
   }
 

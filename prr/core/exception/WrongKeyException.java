@@ -18,9 +18,5 @@ public abstract class WrongKeyException extends Exception {
     public String getKey() {
         return super.getMessage();
     }
-    
-    //get cause for debugging reasons
-    public Throwable getCause() {
-        return super.getCause();
-    } 
+
 }

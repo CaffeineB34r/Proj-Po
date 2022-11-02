@@ -131,7 +131,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
   private void setMode(TerminalMode mode) throws IllegalModeException {
     if (mode == _mode)
-      throw new IllegalModeException(mode);
+      throw new IllegalModeException(mode.toString());
     _mode = mode;
   }
 
