@@ -25,7 +25,8 @@ class DoDisableClientNotifications extends Command<Network> {
     } catch (UnknownKeyException e) {
       throw new UnknownClientKeyException(clientId);
     } catch (IllegalModeException e) {
-      System.out.println(Message.clientNotificationsAlreadyDisabled());
+      _display.addLine(Message.clientNotificationsAlreadyDisabled());
+      _display.display();
     }
   }
 }

@@ -6,14 +6,13 @@ package prr.core;
 abstract public class InteractiveCommunication extends Communication{
     private int _duration;
 
-    public InteractiveCommunication(Int duration){
-        _duration = duration;
+    public InteractiveCommunication(int id, Terminal to, Terminal from){
+        super(id,to,from);
     }
 
-    public Int getDuration(){
+    @Override
+    public int getSize(){
         return _duration;
     }
-    
-    abstract public int getSize();
 } 
 

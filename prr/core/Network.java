@@ -33,19 +33,6 @@ public class Network implements Serializable {
   }
 
   /**
-   * Read text input file and create corresponding domain entities.
-   * 
-   * @param filename name of the text input file
-   * @throws UnrecognizedEntryException if some entry is not correct
-   * @throws IOException                if there is an IO erro while processing
-   *                                    the text file
-   */
-  void importFile(String filename) throws UnrecognizedEntryException, IOException {
-    Parser parser = new Parser(this);
-    parser.parseFile(filename);
-  }
-
-  /**
    * Register a client in the network.
    * 
    * @param name      client name
@@ -172,28 +159,8 @@ public class Network implements Serializable {
    * @return the client's debt value
    * @throws UnknownKeyException if the client key does not exist
    */
-  public long getClientDebts(String clientId) {
-    return _clients.get(clientId).getDebts();
-  }
-
-  /**
-   * Generic method to get a string representing the Objects in a
-   * collection that satisfy a predicate.
-   * 
-   * @param <T>    type of the objects in the collection
-   * @param col    collection of objects
-   * @param filter predicate to filter the objects
-   * @return a string representing the objects in the collection
-   */
-  private <T> String showIf(Collection<T> col, Predicate<T> filter) {
-    StringBuilder sb = new StringBuilder();
-    for (T o : col)
-      if (filter.test(o))
-        sb.append(o.toString()).append(System.lineSeparator());
-    if (sb.length() > 0)
-      sb.deleteCharAt(sb.length() - 1);
-    return sb.toString();
-
+  public long getClientDebts(String clientId) throws UnknownKeyException {
+    return getClient(clientId).getDebts();
   }
 
   /**
@@ -255,5 +222,37 @@ public class Network implements Serializable {
     showIf(_clients.values(), (o) -> o.getDebts() > 0);
   }
 
-  
+  /**
+   * Read text input file and create corresponding domain entities.
+   * 
+   * @param filename name of the text input file
+   * @throws UnrecognizedEntryException if some entry is not correct
+   * @throws IOException                if there is an IO erro while processing
+   *                                    the text file
+   */
+  void importFile(String filename) throws UnrecognizedEntryException, IOException {
+    Parser parser = new Parser(this);
+    parser.parseFile(filename);
+  }
+
+  /**
+   * Generic method to get a string representing the Objects in a
+   * collection that satisfy a predicate.
+   * 
+   * @param <T>    type of the objects in the collection
+   * @param col    collection of objects
+   * @param filter predicate to filter the objects
+   * @return a string representing the objects in the collection
+   */
+  private <T> String showIf(Collection<T> col, Predicate<T> filter) {
+    StringBuilder sb = new StringBuilder();
+    for (T o : col)
+      if (filter.test(o))
+        sb.append(o.toString()).append(System.lineSeparator());
+    if (sb.length() > 0)
+      sb.deleteCharAt(sb.length() - 1);
+    return sb.toString();
+
+  }
+
 }

@@ -14,12 +14,10 @@ class DoEndInteractiveCommunication extends TerminalCommand {
   DoEndInteractiveCommunication(Network context, Terminal terminal) {
     super(Label.END_INTERACTIVE_COMMUNICATION, context, terminal, receiver -> receiver.canEndCurrentCommunication());
   }
-  
+
   @Override
   protected final void execute() throws CommandException {
-    //FIXME implement command
-    throw new UnknownClientKeyException("not implemented"); 
-      
-    
+    // TODO: End communication
+    throw new UnknownClientKeyException("not implemented");
   }
 }
