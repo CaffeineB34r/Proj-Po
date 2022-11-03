@@ -24,6 +24,7 @@ public class Notifications implements Serializable{
         TEXTMESSAGE,
     }
 
+
     public Notifications(NotificationType type){
         this._clients = new TreeMap<String, Client>();
         this._offToSilent = new ArrayList <Client>();
@@ -31,5 +32,9 @@ public class Notifications implements Serializable{
         this._busyToIdle = new ArrayList <Client>();
         this._type = type;
 
+    }
+
+    public void Notify(){
+        //notify 3 arraylists
     }
 }
