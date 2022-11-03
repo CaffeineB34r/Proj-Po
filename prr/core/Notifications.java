@@ -35,6 +35,6 @@ public class Notifications implements Serializable{
     }
 
     public void Notify(){
-        //notify 3 arraylists
+        //Notify 3 arraylists
     }
 }
