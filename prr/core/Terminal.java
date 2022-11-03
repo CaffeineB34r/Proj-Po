@@ -17,6 +17,9 @@ abstract public class Terminal implements Serializable{
   private SortedSet <String> _friends;
   private Notifications _notifications;
   private Client _owner;
+  private InteractiveCommunication _ongoingCommunication;
+  private Communication _madeCommunications;
+  private Communication _receiCommunications;
 
   private String _id;
   private double _debt;

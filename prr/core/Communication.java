@@ -13,6 +13,8 @@ abstract public class Communication implements Serializable {
     private boolean _isOngoing;
     private Terminal _terminalFrom;
     private Terminal _terminalTo;
+    private Terminal _from;
+    private Terminal _to;
 
 
     public Communication(int id, Terminal terminalTo,Terminal terminalfrom) {
