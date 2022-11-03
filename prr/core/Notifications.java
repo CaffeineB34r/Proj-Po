@@ -9,7 +9,6 @@ public class Notifications implements Serializable {
     private ArrayList<Client> _offToSilent;
     private ArrayList<Client> _silentToIdle;
     private ArrayList<Client> _busyToIdle;
-    private Terminal _notifyingTerminal;
 
     public enum NotificationType {
         OFF_TO_SILENT,

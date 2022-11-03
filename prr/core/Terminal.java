@@ -1,8 +1,11 @@
 package prr.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 
 import prr.core.exception.IllegalModeException;
 
@@ -18,8 +21,8 @@ abstract public class Terminal implements Serializable{
   private Notifications _notifications;
   private Client _owner;
   private InteractiveCommunication _ongoingCommunication;
-  private Communication _madeCommunications;
-  private Communication _receiCommunications;
+  private List<Communication> _madeCommunications;
+  private List<Communication> _receiCommunications;
 
   private String _id;
   private double _debt;
@@ -47,6 +50,9 @@ abstract public class Terminal implements Serializable{
     _payments = 0;
     _mode = TerminalMode.IDLE;
     _notifications = new Notifications();
+    _ongoingCommunication = null;
+    _madeCommunications = new ArrayList<>();
+    _receiCommunications = new ArrayList<>();
   }
   
   public String getId() {
