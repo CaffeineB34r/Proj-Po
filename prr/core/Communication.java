@@ -32,11 +32,9 @@ abstract public class Communication implements Serializable{
         _size = 0;
     }
 
-    public void setDuration(){
+    //public void setDuration(){}
 
-    }
-
-    public abstract int getSize();
+    //public abstract int getSize();
 
     public enum Type{
         VOICE,
@@ -55,6 +53,10 @@ abstract public class Communication implements Serializable{
 
     public Status getStatus(){
         return _status;
+    }
+
+    public boolean isOngoing(){
+        return getStatus().compareTo(Status.ONGOING) == 0;
     }
 
     public int getIdCom(){
@@ -93,10 +95,10 @@ abstract public class Communication implements Serializable{
     }
 
 
-    protected double computeCost(ClientLevel client){
+    //protected double computeCost(ClientLevel client){
         
-        return _cost*getSize();
-    }
+      //  return _cost*getSize();
+    //}
 }
 
 
