@@ -247,4 +247,13 @@ public class Network implements Serializable {
     c.enableRecieveNotifications();
   }
 
+  public void showClientsWithoutDebts() {
+    showIf(_clients.values(), (o) -> o.getDebts() == 0);
+  }
+
+  public void showClientsWithDebts() {
+    showIf(_clients.values(), (o) -> o.getDebts() > 0);
+  }
+
+  
 }

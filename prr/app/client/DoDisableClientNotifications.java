@@ -18,7 +18,7 @@ class DoDisableClientNotifications extends Command<Network> {
   }
   
   @Override
-  protected final void execute() throws UnknownClientKeyException{
+  protected final void execute() throws CommandException{
     String clientId = stringField("id");
     try {
       _receiver.disableClientNotifications(clientId);
