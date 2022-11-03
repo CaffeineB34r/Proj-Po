@@ -2,6 +2,7 @@ package prr.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import prr.core.exception.IllegalModeException;
 
@@ -13,9 +14,10 @@ public class Client implements Serializable {
     private final int _taxNumber;
     private ClientState _level;
     private boolean _receiveNotifications;
-    private ArrayList<Terminal> _terminals;
+    private List<Terminal> _terminals;
     private int _payments;
     private int _debts;
+
 
     public Client(String key, String name, int taxId) {
         this._key = key;

@@ -1,14 +1,15 @@
 package prr.core;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.io.Serializable;
 
 public class Notifications implements Serializable {
     /** Serial number for serialization. */
     private static final long serialVersionUID = 202208091753L;
-    private ArrayList<Client> _offToSilent;
-    private ArrayList<Client> _silentToIdle;
-    private ArrayList<Client> _busyToIdle;
+    private List<Client> _offToSilent;
+    private List<Client> _silentToIdle;
+    private List<Client> _busyToIdle;
 
     public enum NotificationType {
         OFF_TO_SILENT,
