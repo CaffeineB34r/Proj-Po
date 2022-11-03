@@ -17,6 +17,8 @@ public class Client implements Serializable {
     private List<Terminal> _terminals;
     private int _payments;
     private int _debts;
+    private List <String> _notifications;
+
 
 
     public Client(String key, String name, int taxId) {
@@ -89,27 +91,33 @@ public class Client implements Serializable {
     }
 
     public void disableReceiveNotifications() throws IllegalModeException {
-        if (getReceiveNotifications()) {
+        if (getReceiveNotifications()) 
             this._receiveNotifications = false;
-        }
-        throw new IllegalModeException("NO");
+        else
+            throw new IllegalModeException("NO");
     }
 
     public void enableRecieveNotifications() throws IllegalModeException {
-        if (getReceiveNotifications()) {
-            this._receiveNotifications = false;
-        }
-        throw new IllegalModeException("YES");
+        if (!getReceiveNotifications())
+            this._receiveNotifications = true;
+        else
+            throw new IllegalModeException("YES");
     }
 
     public void setLevel(ClientState level) {
         this._level = level;
     }
 
+    public void notify(String notificationMessage) {
+        _notifications.add(notificationMessage);
+    }
+
 
 }
 
-abstract class ClientState {
+abstract class ClientState implements Serializable {
+    /** Serial number for serialization. */
+    private static final long serialVersionUID = 202208091753L;
     protected Client _client;
 
     public ClientState(Client client) {
@@ -127,18 +135,12 @@ abstract class ClientState {
 }
 
 class NormalClient extends ClientState {
-
     public NormalClient(Client client) {
         super(client);
     }
 
     @Override
     public double computeCosts(Communication comm) {
-        return comm.getCost();
-    }
-
-    private double computeText(TextCommunication comm) {
-        
         return comm.getCost();
     }
 
@@ -151,6 +153,9 @@ class NormalClient extends ClientState {
     public void downgradeState() {
     }
 
+    public String toString() {
+        return "NORMAL";
+    }
 }
 
 class GoldClient extends ClientState {
@@ -166,7 +171,7 @@ class GoldClient extends ClientState {
 
     @Override
     public void upgradeState() {
-        this._client.setLevel(new GoldClient(this._client));
+        this._client.setLevel(new PlatinumClient(this._client));
     }
 
     @Override
@@ -174,6 +179,9 @@ class GoldClient extends ClientState {
         this._client.setLevel(new NormalClient(this._client));
     }
 
+    public String toString() {
+        return "GOLD";
+    }
 }
 
 class PlatinumClient extends ClientState {
@@ -196,4 +204,7 @@ class PlatinumClient extends ClientState {
         this._client.setLevel(new GoldClient(this._client));
     }
 
+    public String toString() {
+        return "PLATINUM";
+    }
 }

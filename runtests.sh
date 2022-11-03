@@ -2,7 +2,7 @@
 
 let total=0;
 let correct=0;
-
+javac -cp po-uilib.jar:. `find prr -name "*.java"`
 for x in tests/*.in; do
     if [ -e ${x%.in}.import ]; then
         java -cp :po-uilib.jar:. -Dimport=${x%.in}.import -Din=$x -Dout=${x%.in}.outhyp prr.app.App;

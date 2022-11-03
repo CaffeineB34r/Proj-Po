@@ -20,12 +20,6 @@ class DoStartInteractiveCommunication extends TerminalCommand {
   
   @Override
   protected final void execute() throws CommandException {
-    try {
-      _receiver.setOnBusy();
-    } catch (IllegalModeException e) {
-      _display.addLine("This option should not be available");
-      _display.display();
-      throw new UnknownTerminalKeyException("TODO");
-    }
+    
   }
 }

@@ -24,5 +24,4 @@ public class TextCommunication extends Communication {
         return "TEXT";
     }
 
-
 }

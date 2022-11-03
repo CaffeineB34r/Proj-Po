@@ -17,6 +17,7 @@ class DoPerformPayment extends TerminalCommand {
   
   @Override
   protected final void execute() throws CommandException {
-    _receiver.performPayment(integerField("CommKey"));
+    int commKey = integerField("CommKey");
+    _receiver.performPayment(commKey);
   }
 }

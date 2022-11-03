@@ -1,6 +1,8 @@
 package prr.core;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -26,10 +28,12 @@ public class Network implements Serializable {
 
   private SortedMap<String, Client> _clients;
   private SortedMap<String, Terminal> _terminals;
+  private List<Communication> _communications;
 
   public Network() {
     _clients = new TreeMap<String, Client>(String.CASE_INSENSITIVE_ORDER);
     _terminals = new TreeMap<String, Terminal>(String.CASE_INSENSITIVE_ORDER);
+    _communications = new ArrayList<Communication>();
   }
 
   /**
@@ -253,6 +257,14 @@ public class Network implements Serializable {
       sb.deleteCharAt(sb.length() - 1);
     return sb.toString();
 
+  }
+
+  public void sendTextCommunication(Terminal origin, String destinationKey , String message) throws UnknownKeyException, IllegalModeException  {
+    Terminal destination = getTerminal(destinationKey);
+    TextCommunication comm = new TextCommunication(_communications.size(),origin, destination, message);
+    destination.acceptSMS(comm);
+    origin.makeSMS(comm);
+    _communications.add(comm);
   }
 
 }
