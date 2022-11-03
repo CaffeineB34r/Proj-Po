@@ -2,6 +2,8 @@ package prr.core;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import prr.core.exception.IllegalModeException;
 
@@ -13,7 +15,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
 
-  private HashSet <String> _friends;
+  private SortedSet <String> _friends;
   //private List <Client> toNotify;
   private Client _owner;
 
@@ -37,7 +39,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
    */
   public Terminal(String key, Client owner) {
     _id = key;
-    _friends = new HashSet <String>();
+    _friends = new TreeSet <String>();
     _owner = owner;
     _debt = 0;
     _payments = 0;
@@ -63,7 +65,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
   public Client getOwner() {
     return _owner;
   }
-  public HashSet <String> getFriends() {
+  public SortedSet <String> getFriends() {
     return _friends;
   }
   public void addFriend(Terminal friend) {
