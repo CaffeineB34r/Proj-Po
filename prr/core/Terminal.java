@@ -121,19 +121,46 @@ abstract public class Terminal implements Serializable {
   }
 
   public void setOnIdle() throws IllegalModeException {
-    setMode(TerminalMode.IDLE);
+    switch (getMode()){
+      case IDLE -> throw new IllegalModeException("IDLE");
+      case BUSY -> {
+        _notifications.notifyBusyToIdle();
+      }
+      case SILENCE -> {
+        _notifications.notifySilentToIdle();
+      }
+      case OFF -> {}
+    }  
+    _mode = TerminalMode.IDLE;
+  
   }
 
   public void setOnSilent() throws IllegalModeException {
-    setMode(TerminalMode.SILENCE);
+    switch (getMode()){
+      case IDLE -> {}
+      case BUSY -> {
+        _notifications.notifyBusyToSilent();
+      }
+      case SILENCE -> throw new IllegalModeException("SILENCE");
+      case OFF -> {
+        _notifications.notifyOffToSilent();
+      }
+    }  
+    _mode = TerminalMode.SILENCE;
   }
 
   public void turnOff() throws IllegalModeException {
-    setMode(TerminalMode.OFF);
+    if (getMode() == TerminalMode.OFF) {
+      throw new IllegalModeException("OFF");
+    }
+    _mode = TerminalMode.OFF;
   }
 
   public void setOnBusy() throws IllegalModeException {
-    setMode(TerminalMode.BUSY);
+    if (getMode() == TerminalMode.OFF) {
+      throw new IllegalModeException("OFF");
+    }
+    _mode = TerminalMode.BUSY;
   }
 
   /**
@@ -202,11 +229,5 @@ abstract public class Terminal implements Serializable {
 
   protected void acceptVideoCall(Terminal from) {
     // FIXME implement method
-  }
-
-  private void setMode(TerminalMode mode) throws IllegalModeException {
-    if (mode == _mode)
-      throw new IllegalModeException(mode.toString());
-    _mode = mode;
   }
 }
