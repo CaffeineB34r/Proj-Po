@@ -24,7 +24,6 @@ public class Notifications implements Serializable{
         TEXTMESSAGE,
     }
 
-
     public Notifications(NotificationType type){
         this._clients = new TreeMap<String, Client>();
         this._offToSilent = new ArrayList <Client>();
