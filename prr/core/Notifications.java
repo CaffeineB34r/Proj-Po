@@ -32,4 +32,5 @@ public class Notifications implements Serializable{
         this._busyToIdle = new ArrayList <Client>();
         this._type = type;
 
+    }
 }
