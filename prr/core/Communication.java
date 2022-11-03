@@ -36,9 +36,7 @@ abstract public class Communication implements Serializable{
 
     }
 
-    public int getSize(){
-
-    }
+    public abstract int getSize();
 
     public enum Type{
         VOICE,
@@ -103,4 +101,3 @@ abstract public class Communication implements Serializable{
 
 
 
-\
