@@ -86,7 +86,7 @@ abstract public class Communication implements Serializable{
         sb.append(getType()+"|");
         sb.append(getIdCom()+"|");
         sb.append(getIdSender()+"|");
-        sb.append(getIdReceiver() +"|");
+        sb.append(getIdReceiver()+"|");
         sb.append(getUnits()+ "|");
         sb.append(getPrice()+"|");
         sb.append(getStatus());

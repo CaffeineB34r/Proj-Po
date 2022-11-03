@@ -1,7 +1,6 @@
 package prr.core;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
