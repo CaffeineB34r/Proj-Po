@@ -20,4 +20,9 @@ public class TextCommunication extends Communication {
         return _message;
     }
 
+    public String getType(){
+        return "TEXT";
+    }
+
+
 }

@@ -9,13 +9,13 @@ import prr.core.exception.IllegalModeException;
 /**
  * Abstract terminal.
  */
-abstract public class Terminal implements Serializable /* FIXME maybe addd more interfaces */{
+abstract public class Terminal implements Serializable{
 
   /** Serial number for serialization. */
   private static final long serialVersionUID = 202208091753L;
 
   private SortedSet <String> _friends;
-  //private List <Client> toNotify;
+  private Notifications _notifications;
   private Client _owner;
 
   private String _id;
@@ -42,7 +42,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
     _owner = owner;
     _debt = 0;
     _payments = 0;
-    _mode = TerminalMode.IDLE;  
+    _mode = TerminalMode.IDLE;
+    _notifications = new Notifications();
   }
   
   public String getId() {
@@ -176,5 +177,4 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
   public void removeFriend(Terminal f) {
     _friends.remove(f.getId());
   }
-  
 }

@@ -6,18 +6,12 @@ import java.util.ArrayList;
 import prr.core.exception.IllegalModeException;
 
 public class Client implements Serializable {
-    public enum ClientLevel {
-        NORMAL,
-        GOLD,
-        PLATINUM,
-    }
-
     /** Serial number for serialization. */
     private static final long serialVersionUID = 202208091753L;
     private final String _key;
     private final String _name;
     private final int _taxNumber;
-    private ClientLevel _level;
+    private ClientState _level;
     private boolean _receiveNotifications;
     private ArrayList<Terminal> _terminals;
     private int _payments;
@@ -30,7 +24,7 @@ public class Client implements Serializable {
         this._payments = 0;
         this._debts = 0;
         this._terminals = new ArrayList<Terminal>();
-        this._level = ClientLevel.NORMAL;
+        this._level = new NormalClient(this);
         this._receiveNotifications = true;
     }
 
@@ -47,7 +41,7 @@ public class Client implements Serializable {
         return _taxNumber;
     }
 
-    public ClientLevel getLevel() {
+    public ClientState getLevel() {
         return _level;
     }
 
@@ -104,6 +98,100 @@ public class Client implements Serializable {
             this._receiveNotifications = false;
         }
         throw new IllegalModeException("YES");
+    }
+
+    public void setLevel(ClientState level) {
+        this._level = level;
+    }
+
+
+}
+
+abstract class ClientState {
+    protected Client _client;
+
+    public ClientState(Client client) {
+        this._client = client;
+    }
+
+    abstract public double computeCosts(Communication comm);
+
+    abstract public void upgradeState();
+
+    abstract public void downgradeState();
+
+
+
+}
+
+class NormalClient extends ClientState {
+
+    public NormalClient(Client client) {
+        super(client);
+    }
+
+    @Override
+    public double computeCosts(Communication comm) {
+        return comm.getCost();
+    }
+
+    private double computeText(TextCommunication comm) {
+        
+        return comm.getCost();
+    }
+
+    @Override
+    public void upgradeState() {
+        this._client.setLevel(new GoldClient(this._client));
+    }
+
+    @Override
+    public void downgradeState() {
+    }
+
+}
+
+class GoldClient extends ClientState {
+
+    public GoldClient(Client client) {
+        super(client);
+    }
+
+    @Override
+    public double computeCosts(Communication comm) {
+        return comm.getCost() * 0.5;
+    }
+
+    @Override
+    public void upgradeState() {
+        this._client.setLevel(new GoldClient(this._client));
+    }
+
+    @Override
+    public void downgradeState() {
+        this._client.setLevel(new NormalClient(this._client));
+    }
+
+}
+
+class PlatinumClient extends ClientState {
+
+    public PlatinumClient(Client client) {
+        super(client);
+    }
+
+    @Override
+    public double computeCosts(Communication comm) {
+        return 0;
+    }
+
+    @Override
+    public void upgradeState() {
+    }
+
+    @Override
+    public void downgradeState() {
+        this._client.setLevel(new GoldClient(this._client));
     }
 
 }
