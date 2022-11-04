@@ -120,11 +120,16 @@ abstract class ClientState implements Serializable {
     private static final long serialVersionUID = 202208091753L;
     protected Client _client;
 
+
+
     public ClientState(Client client) {
         this._client = client;
     }
 
-    abstract public double computeCosts(Communication comm);
+    abstract public double computeCosts(TextCommunication comm);
+    abstract public double computeCosts(VoiceCommunication comm);
+    abstract public double computeCosts(VideoCommunication comm);
+    
 
     abstract public void upgradeState();
 
@@ -140,8 +145,26 @@ class NormalClient extends ClientState {
     }
 
     @Override
-    public double computeCosts(Communication comm) {
-        return comm.getCost();
+    public double computeCosts(TextCommunication comm) {
+        if (comm.getMessage().length() < 50){
+            return 10;
+        }
+        if(comm.getMessage().length() < 100){
+            return 16;
+        }
+        else if(comm.getMessage().length() >= 100){
+            return 2*comm.getMessage().length();
+        }
+        return 0;
+    }
+
+    @Override
+    public double computeCosts(VoiceCommunication comm){
+        return 20;
+    }
+    @Override
+    public double computeCosts(VideoCommunication comm){
+        return 30; 
     }
 
     @Override
@@ -165,9 +188,32 @@ class GoldClient extends ClientState {
     }
 
     @Override
-    public double computeCosts(Communication comm) {
+    public double computeCosts(TextCommunication comm) {
+        if (comm.getMessage().length() < 50){
+            return 10;
+        }
+        if(comm.getMessage().length() < 100){
+            return 10;
+        }
+        else if(comm.getMessage().length() >= 100){
+            return 2*comm.getMessage().length();
+        }
         return comm.getCost() * 0.5;
     }
+
+    @Override
+    public double computeCosts(VoiceCommunication comm){
+        return 10;
+    }
+    @Override
+    public double computeCosts(VideoCommunication comm){
+        return 20;
+    }
+    
+
+
+
+
 
     @Override
     public void upgradeState() {
@@ -191,8 +237,27 @@ class PlatinumClient extends ClientState {
     }
 
     @Override
-    public double computeCosts(Communication comm) {
+    public double computeCosts(TextCommunication comm) {
+        if (comm.getMessage().length() < 50){
+            return 0;
+        }
+        if(comm.getMessage().length() < 100){
+            return 4;
+        }
+        else if(comm.getMessage().length() >= 100){
+            return 4;
+        }
         return 0;
+    }
+
+    @Override
+    public double computeCosts(VoiceCommunication comm){
+        return 10;
+    }
+
+    @Override
+    public double computeCosts(VideoCommunication comm){
+        return 10;
     }
 
     @Override
@@ -208,3 +273,4 @@ class PlatinumClient extends ClientState {
         return "PLATINUM";
     }
 }
+
