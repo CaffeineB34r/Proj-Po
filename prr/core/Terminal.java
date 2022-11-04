@@ -145,47 +145,37 @@ abstract public class Terminal implements Serializable {
   public void setOnIdle() throws IllegalModeException {
     switch (getMode()) {
       case IDLE -> throw new IllegalModeException("IDLE");
-      case BUSY -> {
-        _notifications.notifyBusyToIdle();
-      }
-      case SILENCE -> {
-        _notifications.notifySilentToIdle();
-      }
-      case OFF -> {
-      }
+      case BUSY -> _notifications.notifyBusyToIdle();
+      case SILENCE -> _notifications.notifySilentToIdle();
+      case OFF -> {System.err.println("OFF to Idle");
+        _notifications.notifyOffToIdle();}
     }
     _mode = TerminalMode.IDLE;
-
   }
 
   public void setOnSilent() throws IllegalModeException {
     switch (getMode()) {
-      case IDLE -> {
-      }
-      case BUSY -> {
-        _notifications.notifyBusyToSilent();
-      }
+      case IDLE -> {}
+      case BUSY -> {}
       case SILENCE -> throw new IllegalModeException("SILENCE");
-      case OFF -> {
-        _notifications.notifyOffToSilent();
-      }
+      case OFF -> _notifications.notifyOffToSilent();
     }
     _mode = TerminalMode.SILENCE;
   }
 
   public void turnOff() throws IllegalModeException {
-    this._previousMode = this._mode;
     if (getMode() == TerminalMode.OFF) {
       throw new IllegalModeException("OFF");
     }
+    this._previousMode = this._mode;
     _mode = TerminalMode.OFF;
   }
 
   public void setOnBusy() throws IllegalModeException {
-    this._previousMode = this._mode;
-    if (getMode() == TerminalMode.OFF) {
-      throw new IllegalModeException("OFF");
+    if (getMode() == TerminalMode.BUSY) {
+      throw new IllegalModeException("BUSY");
     }
+    this._previousMode = this._mode;
     _mode = TerminalMode.BUSY;
   }
 
@@ -279,5 +269,9 @@ abstract public class Terminal implements Serializable {
       throw new UnrecognizedEntryException("There is no ongoing communication");
     }
     return _ongoingCommunication.toString();
+  }
+
+  public void addNotification(String actualMode, String commType) {
+    _notifications.addNotification(actualMode, commType,this.getOwner());
   }
 }

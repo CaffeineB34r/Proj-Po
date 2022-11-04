@@ -10,13 +10,13 @@ public class Notifications implements Serializable {
     private List<Client> _offToSilent;
     private List<Client> _silentToIdle;
     private List<Client> _busyToIdle;
-    private List<Client> _busyToSilent;
+    private List<Client> _offToIdle;
     private Terminal _terminal;
 
     public enum NotificationType {
         OFF_TO_SILENT,
+        OFF_TO_IDLE,
         SILENT_TO_IDLE,
-        BUSY_TO_SILENT,
         BUSY_TO_IDLE
     }
 
@@ -24,51 +24,68 @@ public class Notifications implements Serializable {
         this._offToSilent = new ArrayList<Client>();
         this._silentToIdle = new ArrayList<Client>();
         this._busyToIdle = new ArrayList<Client>();
-        this._busyToSilent = new ArrayList<Client>();
+        this._offToIdle = new ArrayList<Client>();
         this._terminal = context;
     }
 
-    public void addOffToSilent(Client c) {
+    private void addOffToSilent(Client c) {
         this._offToSilent.add(c);
     }
 
-    public void addSilentToIdle(Client c) {
+    private void addSilentToIdle(Client c) {
         this._silentToIdle.add(c);
     }
 
-    public void addBusyToIdle(Client c) {
+    private void addFromBusy(Client c) {
         this._busyToIdle.add(c);
     }
 
-    public void addBusyToSilent(Client c) {
-        this._busyToSilent.add(c);
+    private void addOffToIdle(Client c) {
+        this._offToIdle.add(c);
     }
 
     public void notifyOffToSilent() {
         for (Client c : this._offToSilent) {
-            c.notify("OFF_TO_SILENT|"+this._terminal.getId());
+            c.notify("O2S|" + this._terminal.getId());
         }
         this._offToSilent.clear();
     }
 
     public void notifySilentToIdle() {
         for (Client c : this._silentToIdle) {
-            c.notify("SILENT_TO_IDLE|"+this._terminal.getId());
+            c.notify("S2I|" + this._terminal.getId());
         }
         this._silentToIdle.clear();
     }
 
     public void notifyBusyToIdle() {
         for (Client c : this._busyToIdle) {
-            c.notify("BUSY_TO_IDLE|"+this._terminal.getId());
+            c.notify("B2I|" + this._terminal.getId());
         }
         this._busyToIdle.clear();
     }
 
-    public void notifyBusyToSilent() {
-        for (Client c : this._busyToSilent) {
-            c.notify("BUSY_TO_SILENT|"+this._terminal.getId());
+    public void notifyOffToIdle() {
+        for (Client c : this._offToIdle) {
+            c.notify("O2I|" + this._terminal.getId());
         }
-        this._busyToSilent.clear();
+        this._offToIdle.clear();
     }
+
+    public void addNotification(String actualState, String commType, Client c) {
+        System.err.println("Actual state: " + actualState);
+        switch (actualState) {
+            case "OFF" -> { 
+                if (commType.equals("TEXT")) 
+                    this.addOffToSilent(c);
+                else 
+                    this.addOffToIdle(c);
+                }
+            case "SILENCE" -> this.addSilentToIdle(c);
+            case "BUSY" -> this.addFromBusy(c);
+        }
+
+    }
+
+
 }

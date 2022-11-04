@@ -269,15 +269,22 @@ public class Network implements Serializable {
   public void sendTextCommunication(Terminal origin, String destinationKey, String message)
       throws UnknownKeyException, IllegalModeException {
     Terminal destination = getTerminal(destinationKey);
-    TextCommunication comm = new TextCommunication(_communications.size()+1, destination, origin, message);
-    destination.acceptSMS(comm);
-    origin.makeSMS(comm);
-    _communications.add(comm);
+    try {
+      TextCommunication comm = new TextCommunication(_communications.size()+1, destination, origin, message);
+      destination.acceptSMS(comm);
+      origin.makeSMS(comm);
+      _communications.add(comm); 
+    } catch (IllegalModeException e) {
+      origin.addNotification(e.getMode(), "TEXT");
+      throw e;
+    }
   }
 
   public void startInteractiveCommunication(Terminal origin, String destinationKey, String communicationType)
       throws UnknownKeyException, IllegalModeException, UnsupportedCommException {
     Terminal destination = getTerminal(destinationKey);
+    
+    try {
     if (communicationType.equals("VOICE")) {
       VoiceCommunication comm = new VoiceCommunication(_communications.size()+1, destination, origin);
       origin.makeVoiceCall(comm);
@@ -287,7 +294,11 @@ public class Network implements Serializable {
       VideoCommunication comm = new VideoCommunication(_communications.size()+1, destination, origin);
       origin.makeVideoCall(comm);
       _communications.add(comm);
+    }} catch(IllegalModeException e) {
+      origin.addNotification(e.getMode(), communicationType);
+      throw e;
     }
+
   }
 
   public double endInteractiveCommunication(Terminal origin, int communicationSize){
