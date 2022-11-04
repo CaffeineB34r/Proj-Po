@@ -10,13 +10,10 @@ abstract public class Communication implements Serializable {
     private int _id;
     private boolean _isPaid;
     private double _cost;
-    private boolean _isOngoing;
     private Terminal _terminalFrom;
     private Terminal _terminalTo;
 
-
-
-    public Communication(int id, Terminal terminalTo,Terminal terminalfrom) {
+    public Communication(int id, Terminal terminalTo, Terminal terminalfrom) {
         this._id = id;
         this._terminalTo = terminalTo;
         this._terminalFrom = terminalfrom;
@@ -24,44 +21,46 @@ abstract public class Communication implements Serializable {
     }
 
     public abstract int getSize();
+
     public abstract String getType();
 
-    private void pay(){
+    private void pay() {
         this._isPaid = true;
     }
 
     public boolean isOngoing() {
-        return this._isOngoing;
+        return false;
     }
 
     public int getIdComm() {
         return this._id;
     }
 
-    public Terminal getIdSender() {
+    public Terminal getSender() {
         return this._terminalFrom;
     }
 
-    public Terminal getIdReceiver() {
+    public Terminal getReceiver() {
         return this._terminalTo;
     }
 
-public void computeCost() {
+    public void computeCost() {
+
         this._cost = this._terminalTo.getOwner().computeCost(this);
     }
 
-    public double getCost(){
+    public double getCost() {
         return this._cost;
     }
 
     public String toString() {
         // type|idCommunication|idSender|idReceiver|units|price|status
-        StringBuilder sb = new StringBuilder(getType() +"|");
+        StringBuilder sb = new StringBuilder(getType() + "|");
         sb.append(getIdComm() + "|");
-        sb.append(getIdSender() + "|");
-        sb.append(getIdReceiver() + "|");
+        sb.append(getSender().getId() + "|");
+        sb.append(getReceiver().getId() + "|");
         sb.append(getSize() + "|");
-        sb.append(getCost() + "|");
+        sb.append(Math.round(getCost()) + "|");
         sb.append(isOngoing() ? "ONGOING" : "FINISHED");
 
         return sb.toString();

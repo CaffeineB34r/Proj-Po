@@ -6,10 +6,7 @@ import prr.core.exception.IllegalModeException;
 import prr.core.exception.UnknownKeyException;
 import prr.core.exception.UnsupportedCommException;
 import prr.app.exception.UnknownTerminalKeyException;
-//import pt.tecnico.uilib.Display;
-//import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * Command for starting communication.
@@ -30,7 +27,8 @@ class DoStartInteractiveCommunication extends TerminalCommand {
       switch (ime.getMode()) {
         case "OFF" -> _display.addLine(Message.destinationIsOff(stringField("to")));
         case "BUSY" -> _display.addLine(Message.destinationIsBusy(stringField("to")));
-        case "SILENT" -> _display.addLine(Message.destinationIsSilent(stringField("to")));
+        case "SILENCE" -> _display.addLine(Message.destinationIsSilent(stringField("to")));
+        default -> _display.addLine(ime.getMode().toString());
       }
       _display.display();
     } catch (UnknownKeyException uke) {
@@ -39,8 +37,8 @@ class DoStartInteractiveCommunication extends TerminalCommand {
       switch ( e.getUnsupportedAt()){
         case "SOURCE" -> _display.addLine(Message.unsupportedAtOrigin(stringField("to"), stringField("type")));
         case "DESTINATION" -> _display.addLine(Message.unsupportedAtDestination(stringField("to"), stringField("type")));
-      } 
-    } 
-    
+      }
+      _display.display();
+    }
   }
 }

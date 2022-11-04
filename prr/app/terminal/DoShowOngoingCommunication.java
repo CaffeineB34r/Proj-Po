@@ -2,6 +2,8 @@ package prr.app.terminal;
 
 import prr.core.Network;
 import prr.core.Terminal;
+import prr.core.exception.UnrecognizedEntryException;
+import pt.tecnico.uilib.Display;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add more imports if needed
 
@@ -16,6 +18,12 @@ class DoShowOngoingCommunication extends TerminalCommand {
   
   @Override
   protected final void execute() throws CommandException {
-    //FIXME implement command
+    try {
+      _display.addLine(_receiver.showOngoingCommunication());
+      _display.display();
+    } catch (UnrecognizedEntryException e) {
+      _display.addLine(Message.noOngoingCommunication());
+      _display.display();
+    }
   }
 }

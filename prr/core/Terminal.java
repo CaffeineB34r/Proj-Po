@@ -7,6 +7,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import prr.core.exception.IllegalModeException;
+import prr.core.exception.UnrecognizedEntryException;
 import prr.core.exception.UnsupportedCommException;
 
 /**
@@ -61,7 +62,7 @@ abstract public class Terminal implements Serializable {
     return _id;
   }
 
-  public double getDebt() { 
+  public double getDebt() {
     return _debt;
   }
 
@@ -86,7 +87,13 @@ abstract public class Terminal implements Serializable {
   }
 
   public void addFriend(Terminal friend) {
-    _friends.add(friend.getId());
+    if (!friend.equals(this)) {
+      _friends.add(friend.getId());
+    }
+  }
+
+  public void addDebt(double debt) {
+    _debt += debt;
   }
 
   /**
@@ -101,6 +108,7 @@ abstract public class Terminal implements Serializable {
       throw new IllegalModeException("OFF");
     }
     _madeCommunications.add(comm);
+    addDebt(comm.getCost());
   }
 
   /**
@@ -110,7 +118,7 @@ abstract public class Terminal implements Serializable {
    * @throws IllegalModeException
    */
   public void makeVoiceCall(VoiceCommunication comm) throws IllegalModeException {
-    Terminal reciever = comm.getIdReceiver();
+    Terminal reciever = comm.getReceiver();
     reciever.acceptVoiceCall(comm);
     this.setOnBusy();
     _ongoingCommunication = comm;
@@ -118,7 +126,7 @@ abstract public class Terminal implements Serializable {
   }
 
   public void makeVideoCall(VideoCommunication comm) throws UnsupportedCommException, IllegalModeException {
-    Terminal reciever = comm.getIdReceiver();
+    Terminal reciever = comm.getReceiver();
     reciever.acceptVideoCall(comm);
     this.setOnBusy();
     _ongoingCommunication = comm;
@@ -126,11 +134,11 @@ abstract public class Terminal implements Serializable {
   }
 
   public void endOngoingCommunication(int size) {
-    if (canEndCurrentCommunication()) {
-      _ongoingCommunication.end(size);
-      _debt += _ongoingCommunication.getCost();
-      _ongoingCommunication = null;
+    _ongoingCommunication = null;
+    try {
       this.setOnPreviousMode();
+    } catch (IllegalModeException e) {
+      e.printStackTrace();
     }
   }
 
@@ -166,6 +174,7 @@ abstract public class Terminal implements Serializable {
   }
 
   public void turnOff() throws IllegalModeException {
+    this._previousMode = this._mode;
     if (getMode() == TerminalMode.OFF) {
       throw new IllegalModeException("OFF");
     }
@@ -181,8 +190,13 @@ abstract public class Terminal implements Serializable {
   }
 
   // seton previous mode
-  public void setOnPreviousMode() {
-    this._mode = this._previousMode;
+  public void setOnPreviousMode() throws IllegalModeException {
+    switch (this._previousMode) {
+      case IDLE -> this.setOnIdle();
+      case BUSY -> this.setOnBusy();
+      case SILENCE -> this.setOnSilent();
+      case OFF -> this.turnOff();
+    }
   }
 
   /**
@@ -193,7 +207,7 @@ abstract public class Terminal implements Serializable {
    *         it was the originator of this communication.
    **/
   public boolean canEndCurrentCommunication() {
-    return _ongoingCommunication != null && _ongoingCommunication.getIdSender().getId().equals(this.getId());
+    return _ongoingCommunication != null && _ongoingCommunication.getSender().equals(this);
   }
 
   /**
@@ -244,9 +258,8 @@ abstract public class Terminal implements Serializable {
     _receivedCommunications.add(comm);
   }
 
-
   protected void acceptVoiceCall(VoiceCommunication comm) throws IllegalModeException {
-    if (getMode() != TerminalMode.IDLE) 
+    if (getMode() != TerminalMode.IDLE)
       throw new IllegalModeException(getMode().toString());
     this.setOnBusy();
     _ongoingCommunication = comm;
@@ -254,10 +267,17 @@ abstract public class Terminal implements Serializable {
   }
 
   protected void acceptVideoCall(VideoCommunication comm) throws IllegalModeException, UnsupportedCommException {
-    if (getMode() != TerminalMode.IDLE) 
+    if (getMode() != TerminalMode.IDLE)
       throw new IllegalModeException(getMode().toString());
     this.setOnBusy();
     _ongoingCommunication = comm;
     _receivedCommunications.add(comm);
+  }
+
+  public String showOngoingCommunication() throws UnrecognizedEntryException {
+    if (_ongoingCommunication == null) {
+      throw new UnrecognizedEntryException("There is no ongoing communication");
+    }
+    return _ongoingCommunication.toString();
   }
 }

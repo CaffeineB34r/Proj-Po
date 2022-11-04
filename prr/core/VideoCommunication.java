@@ -8,7 +8,7 @@ public class VideoCommunication extends InteractiveCommunication {
     }
 
     public String getType(){
-        return  "VOICE";
+        return  "VIDEO";
     }
 
 

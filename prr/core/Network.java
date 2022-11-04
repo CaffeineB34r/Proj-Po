@@ -99,7 +99,7 @@ public class Network implements Serializable {
    */
   public void addFriend(String terminal, String friend) throws UnknownKeyException {
     Terminal t = getTerminal(terminal);
-    Terminal f = getTerminal(terminal);
+    Terminal f = getTerminal(friend);
     t.addFriend(f);
   }
 
@@ -176,7 +176,13 @@ public class Network implements Serializable {
    * @throws UnknownKeyException if the client key does not exist
    */
   public String showClient(String Clientid) throws UnknownKeyException {
-    return getClient(Clientid).toString();
+    Client c = getClient(Clientid);
+    StringBuilder sb = new StringBuilder(c.toString());
+    if (c.getNotifications().size() > 0) {
+      sb.append("|");
+      sb.append(showIf(c.getNotifications(), (o) -> true));
+    }
+    return sb.toString();
   }
 
   /**
@@ -219,12 +225,12 @@ public class Network implements Serializable {
     c.enableRecieveNotifications();
   }
 
-  public void showClientsWithoutDebts() {
-    showIf(_clients.values(), (o) -> o.getDebts() == 0);
+  public String showClientsWithoutDebts() {
+    return showIf(_clients.values(), (o) -> o.getDebts() == 0);
   }
 
-  public void showClientsWithDebts() {
-    showIf(_clients.values(), (o) -> o.getDebts() > 0);
+  public String showClientsWithDebts() {
+    return showIf(_clients.values(), (o) -> o.getDebts() > 0);
   }
 
   /**
@@ -250,7 +256,7 @@ public class Network implements Serializable {
    * @return a string representing the objects in the collection
    */
   private <T> String showIf(Collection<T> col, Predicate<T> filter) {
-    StringBuilder sb = new StringBuilder();
+    StringBuilder sb = new StringBuilder("");
     for (T o : col)
       if (filter.test(o))
         sb.append(o.toString()).append(System.lineSeparator());
@@ -260,26 +266,38 @@ public class Network implements Serializable {
 
   }
 
-  public void sendTextCommunication(Terminal origin, String destinationKey , String message) throws UnknownKeyException, IllegalModeException  {
+  public void sendTextCommunication(Terminal origin, String destinationKey, String message)
+      throws UnknownKeyException, IllegalModeException {
     Terminal destination = getTerminal(destinationKey);
-    TextCommunication comm = new TextCommunication(_communications.size(),origin, destination, message);
+    TextCommunication comm = new TextCommunication(_communications.size()+1, destination, origin, message);
     destination.acceptSMS(comm);
     origin.makeSMS(comm);
     _communications.add(comm);
   }
 
-  public void startInteractiveCommunication(Terminal origin, String destinationKey, String communicationType ) throws UnknownKeyException, IllegalModeException, UnsupportedCommException {
+  public void startInteractiveCommunication(Terminal origin, String destinationKey, String communicationType)
+      throws UnknownKeyException, IllegalModeException, UnsupportedCommException {
     Terminal destination = getTerminal(destinationKey);
     if (communicationType.equals("VOICE")) {
-      VoiceCommunication comm = new VoiceCommunication(_communications.size(),origin, destination);
+      VoiceCommunication comm = new VoiceCommunication(_communications.size()+1, destination, origin);
       origin.makeVoiceCall(comm);
       _communications.add(comm);
 
-    }
-    else if (communicationType.equals("VIDEO")) {
-      VideoCommunication comm = new VideoCommunication(_communications.size(),origin, destination);
+    } else if (communicationType.equals("VIDEO")) {
+      VideoCommunication comm = new VideoCommunication(_communications.size()+1, destination, origin);
       origin.makeVideoCall(comm);
       _communications.add(comm);
     }
+  }
+
+  public double endInteractiveCommunication(Terminal origin, int communicationSize){
+    double cost = origin._ongoingCommunication.end(communicationSize);
+    origin.addDebt(cost);
+    return cost;
+
+  }
+
+  public String showAllCommunications() {
+    return showIf(_communications, (o) -> true);
   }
 }

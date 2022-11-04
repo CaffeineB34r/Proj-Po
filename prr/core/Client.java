@@ -17,9 +17,7 @@ public class Client implements Serializable {
     private List<Terminal> _terminals;
     private int _payments;
     private int _debts;
-    private List <String> _notifications;
-
-
+    private List<String> _notifications;
 
     public Client(String key, String name, int taxId) {
         this._key = key;
@@ -30,6 +28,7 @@ public class Client implements Serializable {
         this._terminals = new ArrayList<Terminal>();
         this._level = new NormalClient(this);
         this._receiveNotifications = true;
+        this._notifications = new ArrayList<String>();
     }
 
     // Getters
@@ -51,6 +50,10 @@ public class Client implements Serializable {
 
     public boolean getReceiveNotifications() {
         return _receiveNotifications;
+    }
+
+    public List<String> getNotifications() {
+        return _notifications;
     }
 
     public int getTerminalsSize() {
@@ -91,7 +94,7 @@ public class Client implements Serializable {
     }
 
     public void disableReceiveNotifications() throws IllegalModeException {
-        if (getReceiveNotifications()) 
+        if (getReceiveNotifications())
             this._receiveNotifications = false;
         else
             throw new IllegalModeException("NO");
@@ -116,7 +119,6 @@ public class Client implements Serializable {
         return _level.computeCosts(communication);
     }
 
-
 }
 
 abstract class ClientState implements Serializable {
@@ -124,32 +126,30 @@ abstract class ClientState implements Serializable {
     private static final long serialVersionUID = 202208091753L;
     protected Client _client;
 
-
-
     public ClientState(Client client) {
         this._client = client;
     }
 
-    public double computeCosts(Communication communication){
+    public double computeCosts(Communication communication) {
         if (communication instanceof TextCommunication)
             return computeCosts((TextCommunication) communication);
         else if (communication instanceof VoiceCommunication)
-            return computeCosts((VoiceCommunication) communication);
+            return computeCosts((VoiceCommunication) communication) * communication.getSize();
         else if (communication instanceof VideoCommunication)
-            return computeCosts((VideoCommunication) communication);
+            return computeCosts((VideoCommunication) communication) * communication.getSize();
         else
             return 0;
     }
+
     abstract protected double computeCosts(TextCommunication comm);
+
     abstract protected double computeCosts(VoiceCommunication comm);
+
     abstract protected double computeCosts(VideoCommunication comm);
-    
 
     abstract public void upgradeState();
 
     abstract public void downgradeState();
-
-
 
 }
 
@@ -160,25 +160,25 @@ class NormalClient extends ClientState {
 
     @Override
     protected double computeCosts(TextCommunication comm) {
-        if (comm.getMessage().length() < 50){
+        if (comm.getMessage().length() < 50) {
             return 10;
         }
-        if(comm.getMessage().length() < 100){
+        if (comm.getMessage().length() < 100) {
             return 16;
-        }
-        else if(comm.getMessage().length() >= 100){
-            return 2*comm.getMessage().length();
+        } else if (comm.getMessage().length() >= 100) {
+            return 2 * comm.getMessage().length();
         }
         return 0;
     }
 
     @Override
-    protected double computeCosts(VoiceCommunication comm){
-        return 20;
+    protected double computeCosts(VoiceCommunication comm) {
+        return 20 ;
     }
+
     @Override
-    protected double computeCosts(VideoCommunication comm){
-        return 30; 
+    protected double computeCosts(VideoCommunication comm) {
+        return 30 ;
     }
 
     @Override
@@ -203,24 +203,24 @@ class GoldClient extends ClientState {
 
     @Override
     protected double computeCosts(TextCommunication comm) {
-        if (comm.getMessage().length() < 50){
+        if (comm.getMessage().length() < 50) {
             return 10;
         }
-        if(comm.getMessage().length() < 100){
+        if (comm.getMessage().length() < 100) {
             return 10;
-        }
-        else if(comm.getMessage().length() >= 100){
-            return 2*comm.getMessage().length();
+        } else if (comm.getMessage().length() >= 100) {
+            return 2 * comm.getMessage().length();
         }
         return 0;
     }
 
     @Override
-    protected double computeCosts(VoiceCommunication comm){
+    protected double computeCosts(VoiceCommunication comm) {
         return 10;
     }
+
     @Override
-    protected double computeCosts(VideoCommunication comm){
+    protected double computeCosts(VideoCommunication comm) {
         return 20;
     }
 
@@ -247,25 +247,24 @@ class PlatinumClient extends ClientState {
 
     @Override
     protected double computeCosts(TextCommunication comm) {
-        if (comm.getMessage().length() < 50){
+        if (comm.getMessage().length() < 50) {
             return 0;
         }
-        if(comm.getMessage().length() < 100){
+        if (comm.getMessage().length() < 100) {
             return 4;
-        }
-        else if(comm.getMessage().length() >= 100){
+        } else if (comm.getMessage().length() >= 100) {
             return 4;
         }
         return 0;
     }
 
     @Override
-    protected double computeCosts(VoiceCommunication comm){
+    protected double computeCosts(VoiceCommunication comm) {
         return 10;
     }
 
     @Override
-    protected double computeCosts(VideoCommunication comm){
+    protected double computeCosts(VideoCommunication comm) {
         return 10;
     }
 
@@ -282,4 +281,3 @@ class PlatinumClient extends ClientState {
         return "PLATINUM";
     }
 }
-
