@@ -212,7 +212,7 @@ public class Network implements Serializable {
     // Activity(making calls) generates Debt for the starting terminal
     // Activity could also be defined as having done OR taken any call
 
-    return showIf(_terminals.values(), (o) -> o.getDebt() == 0);
+    return showIf(_terminals.values(), (o) -> o.getMadeCommunications().size() + o.getReceivedCommunications().size() == 0);
   }
 
   public void disableClientNotifications(String clientId) throws UnknownKeyException, IllegalModeException {
@@ -237,12 +237,12 @@ public class Network implements Serializable {
       throws UnknownKeyException, IllegalModeException {
     Terminal destination = getTerminal(destinationKey);
     try {
-      TextCommunication comm = new TextCommunication(_communications.size()+1, destination, origin, message);
+      TextCommunication comm = new TextCommunication(_communications.size() + 1, destination, origin, message);
       destination.acceptSMS(comm);
       origin.makeSMS(comm);
-      _communications.add(comm); 
+      _communications.add(comm);
     } catch (IllegalModeException e) {
-      destination.addNotification(e.getMode(), "TEXT",origin.getOwner());
+      destination.addNotification(e.getMode(), "TEXT", origin.getOwner());
       throw e;
     }
   }
@@ -250,25 +250,26 @@ public class Network implements Serializable {
   public void startInteractiveCommunication(Terminal origin, String destinationKey, String communicationType)
       throws UnknownKeyException, IllegalModeException, UnsupportedCommException {
     Terminal destination = getTerminal(destinationKey);
-    
-    try {
-    if (communicationType.equals("VOICE")) {
-      VoiceCommunication comm = new VoiceCommunication(_communications.size()+1, destination, origin);
-      origin.makeVoiceCall(comm);
-      _communications.add(comm);
 
-    } else if (communicationType.equals("VIDEO")) {
-      VideoCommunication comm = new VideoCommunication(_communications.size()+1, destination, origin);
-      origin.makeVideoCall(comm);
-      _communications.add(comm);
-    }} catch(IllegalModeException e) {
+    try {
+      if (communicationType.equals("VOICE")) {
+        VoiceCommunication comm = new VoiceCommunication(_communications.size() + 1, destination, origin);
+        origin.makeVoiceCall(comm);
+        _communications.add(comm);
+
+      } else if (communicationType.equals("VIDEO")) {
+        VideoCommunication comm = new VideoCommunication(_communications.size() + 1, destination, origin);
+        origin.makeVideoCall(comm);
+        _communications.add(comm);
+      }
+    } catch (IllegalModeException e) {
       destination.addNotification(e.getMode(), communicationType, origin.getOwner());
       throw e;
     }
 
   }
 
-  public double endInteractiveCommunication(Terminal origin, int communicationSize){
+  public double endInteractiveCommunication(Terminal origin, int communicationSize) {
     double cost = origin._ongoingCommunication.end(communicationSize);
     origin.addDebt(cost);
     return cost;
@@ -311,4 +312,27 @@ public class Network implements Serializable {
     return sb.toString();
 
   }
+
+  public String showCommunicationsFromClient(String stringField) throws UnknownKeyException {
+    Terminal t = getTerminal(stringField);
+    return showIf(t.getMadeCommunications(), (o) -> true);
+  }
+
+  public String showCommunicationsToClient(String stringField) throws UnknownKeyException {
+    Terminal t = getTerminal(stringField);
+    return showIf(t.getReceivedCommunications(), (o) -> true);
+  }
+
+  public String showTerminalsWithPositiveBalance() {
+    return showIf(_terminals.values(), (o) -> o.getBalance() > 0);
+  }
+
+  public double showGlobalBalance() {
+    double balance = 0;
+    for (Terminal t : _terminals.values()) {
+      balance += t.getBalance();
+    }
+    return balance;
+  }
+
 }

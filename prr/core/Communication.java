@@ -18,13 +18,14 @@ abstract public class Communication implements Serializable {
         this._terminalTo = terminalTo;
         this._terminalFrom = terminalfrom;
         this._isPaid = false;
+        this._cost = 0;
     }
 
     public abstract int getSize();
 
     public abstract String getType();
 
-    private void pay() {
+    public void pay() {
         this._isPaid = true;
     }
 

@@ -2,6 +2,7 @@ package prr.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -231,7 +232,10 @@ abstract public class Terminal implements Serializable {
   }
 
   public void performPayment(int commKey) {
-
+    _madeCommunications.get(commKey).pay();
+    double cost = _madeCommunications.get(commKey).getCost();
+    _payments += cost;
+    _debt -= cost;
   }
 
   /**
@@ -271,8 +275,16 @@ abstract public class Terminal implements Serializable {
   }
 
   public void addNotification(String actualMode, String commType, Client client) {
-    
+
     _notifications.addNotification(actualMode, commType,client);
-    
+
+  }
+
+  public List<Communication> getMadeCommunications() {
+    return this._madeCommunications;
+  }
+
+  public List<Communication> getReceivedCommunications() {
+    return this._receivedCommunications;
   }
 }

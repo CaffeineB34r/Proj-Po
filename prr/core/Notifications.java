@@ -40,7 +40,7 @@ public class Notifications implements Serializable {
             this._silentToIdle.add(c);
     }
 
-    private void addFromBusy(Client c) {
+    private void addBusyToIdle(Client c) {
         if (!isBeingNotified(c)) 
             this._busyToIdle.add(c);
     }
@@ -95,13 +95,14 @@ public class Notifications implements Serializable {
                 else
                     this.addOffToIdle(c);
             }
+            case "BUSY" -> this.addBusyToIdle(c);
             case "SILENCE" -> this.addSilentToIdle(c);
-            case "BUSY" -> this.addFromBusy(c);
         }
 
     }
 
     public void see() {
+        System.out.println("TERMINAL "+ this._terminal);
         System.out.println("O2S: " + this._offToSilent);
         System.out.println("S2I: " + this._silentToIdle);
         System.out.println("B2I: " + this._busyToIdle);

@@ -16,6 +16,7 @@ class DoShowTerminalsWithPositiveBalance extends Command<Network> {
 
   @Override
   protected final void execute() throws CommandException {
-    //FIXME implement command
+    _display.add(_receiver.showTerminalsWithPositiveBalance());
+    _display.display();
   }
 }
