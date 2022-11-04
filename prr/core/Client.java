@@ -198,7 +198,7 @@ class GoldClient extends ClientState {
         else if(comm.getMessage().length() >= 100){
             return 2*comm.getMessage().length();
         }
-        return comm.getCost() * 0.5;
+        return 0;
     }
 
     @Override
