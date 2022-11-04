@@ -10,6 +10,7 @@ public class TextCommunication extends Communication {
     public TextCommunication(int id, Terminal to,Terminal from,String message){
         super(id,to,from);
         this._message = message;
+        computeCost();
     }
 
     public int getSize(){

@@ -61,7 +61,7 @@ abstract public class Terminal implements Serializable {
     return _id;
   }
 
-  public double getDebt() {
+  public double getDebt() { 
     return _debt;
   }
 
@@ -107,36 +107,28 @@ abstract public class Terminal implements Serializable {
    * Starts a voice communication.
    * 
    * @param to Terminal to start the communication with.
+   * @throws IllegalModeException
    */
-  public void makeVoiceCall(VoiceCommunication comm){
-     try {
-      if (canStartCommunication()) {
-        _ongoingCommunication = comm;
-        this.setOnBusy();
-        _receivedCommunications.add(comm);
-      }
-    } catch (IllegalModeException e) {
-      //impossible to happen
-      e.printStackTrace();
-    }
+  public void makeVoiceCall(VoiceCommunication comm) throws IllegalModeException {
+    Terminal reciever = comm.getIdReceiver();
+    reciever.acceptVoiceCall(comm);
+    this.setOnBusy();
+    _ongoingCommunication = comm;
+    _receivedCommunications.add(comm);
   }
 
-  public void makeVideoCall(VideoCommunication comm) throws UnsupportedCommException {
-    try {
-      if (canStartCommunication()) {
-        _ongoingCommunication = comm;
-        this.setOnBusy();
-        _receivedCommunications.add(comm);
-      }
-    } catch (IllegalModeException e) {
-      //impossible to happen
-      e.printStackTrace();
-    }
+  public void makeVideoCall(VideoCommunication comm) throws UnsupportedCommException, IllegalModeException {
+    Terminal reciever = comm.getIdReceiver();
+    reciever.acceptVideoCall(comm);
+    this.setOnBusy();
+    _ongoingCommunication = comm;
+    _receivedCommunications.add(comm);
   }
 
   public void endOngoingCommunication(int size) {
     if (canEndCurrentCommunication()) {
       _ongoingCommunication.end(size);
+      _debt += _ongoingCommunication.getCost();
       _ongoingCommunication = null;
       this.setOnPreviousMode();
     }
@@ -189,7 +181,7 @@ abstract public class Terminal implements Serializable {
   }
 
   // seton previous mode
-  public void setOnPreviousMode(){
+  public void setOnPreviousMode() {
     this._mode = this._previousMode;
   }
 
@@ -252,29 +244,20 @@ abstract public class Terminal implements Serializable {
     _receivedCommunications.add(comm);
   }
 
+
   protected void acceptVoiceCall(VoiceCommunication comm) throws IllegalModeException {
-    if (getMode() == TerminalMode.OFF) {
-      throw new IllegalModeException("OFF");
-    } else if (getMode() == TerminalMode.BUSY) {
-      throw new IllegalModeException("BUSY");
-    } else if (getMode() == TerminalMode.SILENCE) {
-      throw new IllegalModeException("SILENCE");
-    }
-    _ongoingCommunication = comm;
+    if (getMode() != TerminalMode.IDLE) 
+      throw new IllegalModeException(getMode().toString());
     this.setOnBusy();
+    _ongoingCommunication = comm;
     _receivedCommunications.add(comm);
   }
 
   protected void acceptVideoCall(VideoCommunication comm) throws IllegalModeException, UnsupportedCommException {
-    if (getMode() == TerminalMode.OFF) {
-      throw new IllegalModeException("OFF");
-    } else if (getMode() == TerminalMode.BUSY) {
-      throw new IllegalModeException("BUSY");
-    } else if (getMode() == TerminalMode.SILENCE) {
-      throw new IllegalModeException("SILENCE");
-    }
-    _ongoingCommunication = comm;
+    if (getMode() != TerminalMode.IDLE) 
+      throw new IllegalModeException(getMode().toString());
     this.setOnBusy();
+    _ongoingCommunication = comm;
     _receivedCommunications.add(comm);
   }
 }

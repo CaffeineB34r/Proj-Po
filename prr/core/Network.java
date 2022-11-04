@@ -15,6 +15,7 @@ import prr.core.exception.InvalidKeyException;
 import prr.core.exception.UnknownKeyException;
 
 import prr.core.exception.UnrecognizedEntryException;
+import prr.core.exception.UnsupportedCommException;
 
 // add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -267,18 +268,16 @@ public class Network implements Serializable {
     _communications.add(comm);
   }
 
-  public void startInteractiveCommunication(Terminal origin, String destinationKey, String communicationType ) throws UnknownKeyException, IllegalModeException {
+  public void startInteractiveCommunication(Terminal origin, String destinationKey, String communicationType ) throws UnknownKeyException, IllegalModeException, UnsupportedCommException {
     Terminal destination = getTerminal(destinationKey);
-    
     if (communicationType.equals("VOICE")) {
       VoiceCommunication comm = new VoiceCommunication(_communications.size(),origin, destination);
-      destination.acceptVoiceCall(comm);
       origin.makeVoiceCall(comm);
       _communications.add(comm);
+
     }
     else if (communicationType.equals("VIDEO")) {
       VideoCommunication comm = new VideoCommunication(_communications.size(),origin, destination);
-      destination.acceptVideoCall(comm);
       origin.makeVideoCall(comm);
       _communications.add(comm);
     }

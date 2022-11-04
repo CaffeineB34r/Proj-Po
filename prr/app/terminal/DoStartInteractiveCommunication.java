@@ -4,6 +4,7 @@ import prr.core.Network;
 import prr.core.Terminal;
 import prr.core.exception.IllegalModeException;
 import prr.core.exception.UnknownKeyException;
+import prr.core.exception.UnsupportedCommException;
 import prr.app.exception.UnknownTerminalKeyException;
 //import pt.tecnico.uilib.Display;
 //import pt.tecnico.uilib.forms.Form;
@@ -25,17 +26,21 @@ class DoStartInteractiveCommunication extends TerminalCommand {
   protected final void execute() throws CommandException {
     try {
       _network.startInteractiveCommunication(_receiver, stringField("to"), stringField("type"));
-    } catch (IllegalModeException e) {
-      switch (e.getMode()) {
+    } catch (IllegalModeException ime) {
+      switch (ime.getMode()) {
         case "OFF" -> _display.addLine(Message.destinationIsOff(stringField("to")));
         case "BUSY" -> _display.addLine(Message.destinationIsBusy(stringField("to")));
         case "SILENT" -> _display.addLine(Message.destinationIsSilent(stringField("to")));
       }
       _display.display();
-    } catch (UnknownKeyException e) {
-      switch (e.getMessage()){
-        
-      }
-    }
+    } catch (UnknownKeyException uke) {
+      throw new UnknownTerminalKeyException(uke.getKey());
+    } catch (UnsupportedCommException e) {
+      switch ( e.getUnsupportedAt()){
+        case "SOURCE" -> _display.addLine(Message.unsupportedAtOrigin(stringField("to"), stringField("type")));
+        case "DESTINATION" -> _display.addLine(Message.unsupportedAtDestination(stringField("to"), stringField("type")));
+      } 
+    } 
+    
   }
 }

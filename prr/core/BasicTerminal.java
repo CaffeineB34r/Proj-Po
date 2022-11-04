@@ -17,12 +17,12 @@ public class BasicTerminal extends Terminal {
 
     @Override
     protected void acceptVideoCall(VideoCommunication comm) throws UnsupportedCommException {
-        throw new UnsupportedCommException("destination");
+        throw new UnsupportedCommException("DESTINATION");
     }
 
     @Override
     public void makeVideoCall(VideoCommunication comm) throws UnsupportedCommException {
-        throw new UnsupportedCommException("source");
+        throw new UnsupportedCommException("SOURCE");
     }
 
     @Override
