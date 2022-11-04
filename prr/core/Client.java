@@ -112,7 +112,6 @@ public class Client implements Serializable {
     }
 
     public void notify(String notificationMessage) {
-        System.err.println("notify: "+notificationMessage);
         _notifications.add(notificationMessage);
     }
 

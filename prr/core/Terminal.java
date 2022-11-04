@@ -147,8 +147,7 @@ abstract public class Terminal implements Serializable {
       case IDLE -> throw new IllegalModeException("IDLE");
       case BUSY -> _notifications.notifyBusyToIdle();
       case SILENCE -> _notifications.notifySilentToIdle();
-      case OFF -> {System.err.println("OFF to Idle");
-        _notifications.notifyOffToIdle();}
+      case OFF -> _notifications.notifyOffToIdle();
     }
     _mode = TerminalMode.IDLE;
   }
@@ -271,7 +270,9 @@ abstract public class Terminal implements Serializable {
     return _ongoingCommunication.toString();
   }
 
-  public void addNotification(String actualMode, String commType) {
-    _notifications.addNotification(actualMode, commType,this.getOwner());
+  public void addNotification(String actualMode, String commType, Client client) {
+    
+    _notifications.addNotification(actualMode, commType,client);
+    
   }
 }

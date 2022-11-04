@@ -179,7 +179,7 @@ public class Network implements Serializable {
     Client c = getClient(Clientid);
     StringBuilder sb = new StringBuilder(c.toString());
     if (c.getNotifications().size() > 0) {
-      sb.append("|");
+      sb.append(System.lineSeparator());
       sb.append(showIf(c.getNotifications(), (o) -> true));
     }
     return sb.toString();
@@ -233,6 +233,52 @@ public class Network implements Serializable {
     return showIf(_clients.values(), (o) -> o.getDebts() > 0);
   }
 
+  public void sendTextCommunication(Terminal origin, String destinationKey, String message)
+      throws UnknownKeyException, IllegalModeException {
+    Terminal destination = getTerminal(destinationKey);
+    try {
+      TextCommunication comm = new TextCommunication(_communications.size()+1, destination, origin, message);
+      destination.acceptSMS(comm);
+      origin.makeSMS(comm);
+      _communications.add(comm); 
+    } catch (IllegalModeException e) {
+      destination.addNotification(e.getMode(), "TEXT",origin.getOwner());
+      throw e;
+    }
+  }
+
+  public void startInteractiveCommunication(Terminal origin, String destinationKey, String communicationType)
+      throws UnknownKeyException, IllegalModeException, UnsupportedCommException {
+    Terminal destination = getTerminal(destinationKey);
+    
+    try {
+    if (communicationType.equals("VOICE")) {
+      VoiceCommunication comm = new VoiceCommunication(_communications.size()+1, destination, origin);
+      origin.makeVoiceCall(comm);
+      _communications.add(comm);
+
+    } else if (communicationType.equals("VIDEO")) {
+      VideoCommunication comm = new VideoCommunication(_communications.size()+1, destination, origin);
+      origin.makeVideoCall(comm);
+      _communications.add(comm);
+    }} catch(IllegalModeException e) {
+      destination.addNotification(e.getMode(), communicationType, origin.getOwner());
+      throw e;
+    }
+
+  }
+
+  public double endInteractiveCommunication(Terminal origin, int communicationSize){
+    double cost = origin._ongoingCommunication.end(communicationSize);
+    origin.addDebt(cost);
+    return cost;
+
+  }
+
+  public String showAllCommunications() {
+    return showIf(_communications, (o) -> true);
+  }
+
   /**
    * Read text input file and create corresponding domain entities.
    * 
@@ -264,51 +310,5 @@ public class Network implements Serializable {
       sb.deleteCharAt(sb.length() - 1);
     return sb.toString();
 
-  }
-
-  public void sendTextCommunication(Terminal origin, String destinationKey, String message)
-      throws UnknownKeyException, IllegalModeException {
-    Terminal destination = getTerminal(destinationKey);
-    try {
-      TextCommunication comm = new TextCommunication(_communications.size()+1, destination, origin, message);
-      destination.acceptSMS(comm);
-      origin.makeSMS(comm);
-      _communications.add(comm); 
-    } catch (IllegalModeException e) {
-      origin.addNotification(e.getMode(), "TEXT");
-      throw e;
-    }
-  }
-
-  public void startInteractiveCommunication(Terminal origin, String destinationKey, String communicationType)
-      throws UnknownKeyException, IllegalModeException, UnsupportedCommException {
-    Terminal destination = getTerminal(destinationKey);
-    
-    try {
-    if (communicationType.equals("VOICE")) {
-      VoiceCommunication comm = new VoiceCommunication(_communications.size()+1, destination, origin);
-      origin.makeVoiceCall(comm);
-      _communications.add(comm);
-
-    } else if (communicationType.equals("VIDEO")) {
-      VideoCommunication comm = new VideoCommunication(_communications.size()+1, destination, origin);
-      origin.makeVideoCall(comm);
-      _communications.add(comm);
-    }} catch(IllegalModeException e) {
-      origin.addNotification(e.getMode(), communicationType);
-      throw e;
-    }
-
-  }
-
-  public double endInteractiveCommunication(Terminal origin, int communicationSize){
-    double cost = origin._ongoingCommunication.end(communicationSize);
-    origin.addDebt(cost);
-    return cost;
-
-  }
-
-  public String showAllCommunications() {
-    return showIf(_communications, (o) -> true);
   }
 }

@@ -29,19 +29,25 @@ public class Notifications implements Serializable {
     }
 
     private void addOffToSilent(Client c) {
-        this._offToSilent.add(c);
+        if (!isBeingNotified(c)) 
+            _offToSilent.add(c);
+        
+        
     }
 
     private void addSilentToIdle(Client c) {
-        this._silentToIdle.add(c);
+        if (!isBeingNotified(c)) 
+            this._silentToIdle.add(c);
     }
 
     private void addFromBusy(Client c) {
-        this._busyToIdle.add(c);
+        if (!isBeingNotified(c)) 
+            this._busyToIdle.add(c);
     }
 
     private void addOffToIdle(Client c) {
-        this._offToIdle.add(c);
+        if (!isBeingNotified(c))
+            this._offToIdle.add(c);
     }
 
     public void notifyOffToSilent() {
@@ -69,23 +75,37 @@ public class Notifications implements Serializable {
         for (Client c : this._offToIdle) {
             c.notify("O2I|" + this._terminal.getId());
         }
+        for (Client c : this._offToSilent) {
+            c.notify("O2I|" + this._terminal.getId());
+        }
+
         this._offToIdle.clear();
+        this._offToSilent.clear();
+    }
+    
+    private boolean isBeingNotified(Client c) {
+        return this._offToSilent.contains(c) || this._silentToIdle.contains(c) || this._busyToIdle.contains(c) || this._offToIdle.contains(c);
     }
 
     public void addNotification(String actualState, String commType, Client c) {
-        System.err.println("Actual state: " + actualState);
         switch (actualState) {
-            case "OFF" -> { 
-                if (commType.equals("TEXT")) 
+            case "OFF" -> {
+                if (commType.equals("TEXT"))
                     this.addOffToSilent(c);
-                else 
+                else
                     this.addOffToIdle(c);
-                }
+            }
             case "SILENCE" -> this.addSilentToIdle(c);
             case "BUSY" -> this.addFromBusy(c);
         }
 
     }
 
+    public void see() {
+        System.out.println("O2S: " + this._offToSilent);
+        System.out.println("S2I: " + this._silentToIdle);
+        System.out.println("B2I: " + this._busyToIdle);
+        System.out.println("O2I: " + this._offToIdle);
+    }
 
 }
