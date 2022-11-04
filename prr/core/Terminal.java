@@ -6,37 +6,37 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-
 import prr.core.exception.IllegalModeException;
+import prr.core.exception.UnsupportedCommException;
 
 /**
  * Abstract terminal.
  */
 abstract public class Terminal implements Serializable {
 
-  /** Serial number for serialization. */
-  private static final long serialVersionUID = 202208091753L;
-
-  private SortedSet <String> _friends;
-  private Notifications _notifications;
-  private Client _owner;
-  private InteractiveCommunication _ongoingCommunication;
-  private List<Communication> _madeCommunications;
-  private List<Communication> _receivedCommunications;
-
-  private String _id;
-  private double _debt;
-  private double _payments;
-  private TerminalMode _mode;
-
-  /** Possible Terminal states*/
-  public enum TerminalMode { 
+  /** Possible Terminal states */
+  public enum TerminalMode {
     OFF,
     BUSY,
     SILENCE,
     IDLE,
   }
 
+  /** Serial number for serialization. */
+  private static final long serialVersionUID = 202208091753L;
+  private SortedSet<String> _friends;
+  private Notifications _notifications;
+  private Client _owner;
+  protected InteractiveCommunication _ongoingCommunication;
+  private List<Communication> _madeCommunications;
+
+  protected List<Communication> _receivedCommunications;
+  private String _id;
+  private double _debt;
+  private double _payments;
+
+  private TerminalMode _mode;
+  private TerminalMode _previousMode;
 
   /**
    * Creates a new terminal.
@@ -108,20 +108,42 @@ abstract public class Terminal implements Serializable {
    * 
    * @param to Terminal to start the communication with.
    */
-  public void makeVoiceCall(Terminal to) {
-    // FIXME implement method
+  public void makeVoiceCall(VoiceCommunication comm){
+     try {
+      if (canStartCommunication()) {
+        _ongoingCommunication = comm;
+        this.setOnBusy();
+        _receivedCommunications.add(comm);
+      }
+    } catch (IllegalModeException e) {
+      //impossible to happen
+      e.printStackTrace();
+    }
   }
 
-  public void makeVideoCall(Terminal to) {
-    // FIXME implement method
+  public void makeVideoCall(VideoCommunication comm) throws UnsupportedCommException {
+    try {
+      if (canStartCommunication()) {
+        _ongoingCommunication = comm;
+        this.setOnBusy();
+        _receivedCommunications.add(comm);
+      }
+    } catch (IllegalModeException e) {
+      //impossible to happen
+      e.printStackTrace();
+    }
   }
 
   public void endOngoingCommunication(int size) {
-    // FIXME implement method
+    if (canEndCurrentCommunication()) {
+      _ongoingCommunication.end(size);
+      _ongoingCommunication = null;
+      this.setOnPreviousMode();
+    }
   }
 
   public void setOnIdle() throws IllegalModeException {
-    switch (getMode()){
+    switch (getMode()) {
       case IDLE -> throw new IllegalModeException("IDLE");
       case BUSY -> {
         _notifications.notifyBusyToIdle();
@@ -129,15 +151,17 @@ abstract public class Terminal implements Serializable {
       case SILENCE -> {
         _notifications.notifySilentToIdle();
       }
-      case OFF -> {}
-    }  
+      case OFF -> {
+      }
+    }
     _mode = TerminalMode.IDLE;
-  
+
   }
 
   public void setOnSilent() throws IllegalModeException {
-    switch (getMode()){
-      case IDLE -> {}
+    switch (getMode()) {
+      case IDLE -> {
+      }
       case BUSY -> {
         _notifications.notifyBusyToSilent();
       }
@@ -145,7 +169,7 @@ abstract public class Terminal implements Serializable {
       case OFF -> {
         _notifications.notifyOffToSilent();
       }
-    }  
+    }
     _mode = TerminalMode.SILENCE;
   }
 
@@ -157,10 +181,16 @@ abstract public class Terminal implements Serializable {
   }
 
   public void setOnBusy() throws IllegalModeException {
+    this._previousMode = this._mode;
     if (getMode() == TerminalMode.OFF) {
       throw new IllegalModeException("OFF");
     }
     _mode = TerminalMode.BUSY;
+  }
+
+  // seton previous mode
+  public void setOnPreviousMode(){
+    this._mode = this._previousMode;
   }
 
   /**
@@ -171,8 +201,7 @@ abstract public class Terminal implements Serializable {
    *         it was the originator of this communication.
    **/
   public boolean canEndCurrentCommunication() {
-    return _mode == TerminalMode.BUSY;
-    // add check for comms
+    return _ongoingCommunication != null && _ongoingCommunication.getIdSender().getId().equals(this.getId());
   }
 
   /**
@@ -223,11 +252,29 @@ abstract public class Terminal implements Serializable {
     _receivedCommunications.add(comm);
   }
 
-  protected void acceptVoiceCall(Terminal from) {
-    // FIXME implement method
+  protected void acceptVoiceCall(VoiceCommunication comm) throws IllegalModeException {
+    if (getMode() == TerminalMode.OFF) {
+      throw new IllegalModeException("OFF");
+    } else if (getMode() == TerminalMode.BUSY) {
+      throw new IllegalModeException("BUSY");
+    } else if (getMode() == TerminalMode.SILENCE) {
+      throw new IllegalModeException("SILENCE");
+    }
+    _ongoingCommunication = comm;
+    this.setOnBusy();
+    _receivedCommunications.add(comm);
   }
 
-  protected void acceptVideoCall(Terminal from) {
-    // FIXME implement method
+  protected void acceptVideoCall(VideoCommunication comm) throws IllegalModeException, UnsupportedCommException {
+    if (getMode() == TerminalMode.OFF) {
+      throw new IllegalModeException("OFF");
+    } else if (getMode() == TerminalMode.BUSY) {
+      throw new IllegalModeException("BUSY");
+    } else if (getMode() == TerminalMode.SILENCE) {
+      throw new IllegalModeException("SILENCE");
+    }
+    _ongoingCommunication = comm;
+    this.setOnBusy();
+    _receivedCommunications.add(comm);
   }
 }

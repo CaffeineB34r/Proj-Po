@@ -14,5 +14,10 @@ abstract public class InteractiveCommunication extends Communication{
     public int getSize(){
         return _duration;
     }
+
+    public void end(int size) {
+        _duration = size;
+        computeCost();
+    }
 } 
 

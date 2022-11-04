@@ -1,5 +1,7 @@
 package prr.core;
 
+import prr.core.exception.UnsupportedCommException;
+
 /**
  * Class BasicTerminal implements a basic terminal.
  * (can't make video calls)
@@ -11,6 +13,16 @@ public class BasicTerminal extends Terminal {
 
     public BasicTerminal(String key, Client owner) {
         super(key, owner);
+    }
+
+    @Override
+    protected void acceptVideoCall(VideoCommunication comm) throws UnsupportedCommException {
+        throw new UnsupportedCommException("destination");
+    }
+
+    @Override
+    public void makeVideoCall(VideoCommunication comm) throws UnsupportedCommException {
+        throw new UnsupportedCommException("source");
     }
 
     @Override

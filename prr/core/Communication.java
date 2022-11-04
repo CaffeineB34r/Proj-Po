@@ -46,6 +46,10 @@ abstract public class Communication implements Serializable {
         return this._terminalTo;
     }
 
+public void computeCost() {
+        this._cost = this._terminalTo.getOwner().computeCost(this);
+    }
+
     public double getCost(){
         return this._cost;
     }

@@ -112,6 +112,10 @@ public class Client implements Serializable {
         _notifications.add(notificationMessage);
     }
 
+    public double computeCost(Communication communication) {
+        return _level.computeCosts(communication);
+    }
+
 
 }
 
@@ -141,6 +145,7 @@ class NormalClient extends ClientState {
 
     @Override
     public double computeCosts(Communication comm) {
+        
         return comm.getCost();
     }
 
